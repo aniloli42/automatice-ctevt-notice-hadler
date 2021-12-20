@@ -6,6 +6,8 @@ const noticeReviewAndPost = async () => {
   try {
     const scrappedData = await scrapper()
 
+    console.log(scrappedData[0])
+
     const lastNotice = await getLastNotice()
 
     const index = scrappedData.findIndex(
