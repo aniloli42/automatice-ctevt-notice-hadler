@@ -22,10 +22,6 @@ app.get("/", async (req, res) => {
   res.send(rest)
 })
 
-setInterval(
-  () => {
-    noticeReviewAndPost()
-  },
-  300,
-  000
-)
+setInterval(() => {
+  noticeReviewAndPost()
+}, 300000)
