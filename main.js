@@ -21,6 +21,11 @@ app.listen(port, () => {
 
 // intial server endpoint
 app.get("/", async (req, res) => {
+  res.send("Welcome To CTEVT NOTICE Handler Server")
+})
+
+// get the facebook status, which status endpoint
+app.get("/status", async (req, res) => {
   const response = await requestData()
   const { id, ...rest } = response
 
