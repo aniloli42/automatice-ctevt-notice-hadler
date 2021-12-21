@@ -1,6 +1,7 @@
 const scrapper = require("../services/scrapper")
 const Data = require("./../models/data")
 const { createPost } = require("./../services/facebook")
+const createShortLink = require("./../services/linkShortner")
 
 const noticeReviewAndPost = async () => {
   try {
@@ -49,11 +50,16 @@ const postNotice = async (notices) => {
     await createPost({
       message: `${notice.notice_title}\n\nPublished Date: ${
         notice.published_date
-      }\nNotice Link: ${notice.notice_link}\nPublished By: ${
+      }\nNotice Link: ${await createShortLink(
+        notice.notice_link
+      )}\nPublished By: ${
         notice.published_by
-      }\n\nAttached File Links:\n${notice.file_links.map(
-        (link) => `${link.file_title}: ${link.file_link}\n`
-      )}\n\nSource: https://ctevtexam.org.np`,
+      }\n\nAttached File Links:\n${await Promise.all(
+        notice.file_links.map(
+          async (link) =>
+            `${link.file_title}: ${await createShortLink(link.file_link)}\n`
+        )
+      )}\nSource: https://ctevtexam.org.np\n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
     })
   })
 }
