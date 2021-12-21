@@ -6,7 +6,7 @@ const noticeReviewAndPost = async () => {
   try {
     const scrappedData = await scrapper()
 
-    console.log(scrappedData[0].published_title)
+    console.log(scrappedData[0].notice_title)
 
     const lastNotice = await getLastNotice()
 
