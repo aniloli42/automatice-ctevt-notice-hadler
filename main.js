@@ -1,6 +1,6 @@
 const express = require("express")
 const dotenv = require("dotenv")
-const http = require("http")
+const axios = require("axios")
 
 const connectDB = require("./config/db")
 const { requestData } = require("./services/facebook")
@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
 
 // keep server alive, call app every 5 mins of interval
 setInterval(() => {
-  http.get("https://ctevtnotice.herokuapp.com/")
+  axios.get("https://ctevtnotice.herokuapp.com/")
 }, 300000)
 
 // handle notice fetching, comparing, post and save every 5 mins of interval
