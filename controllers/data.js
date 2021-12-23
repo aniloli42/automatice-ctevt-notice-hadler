@@ -7,8 +7,6 @@ const noticeReviewAndPost = async () => {
   try {
     const scrappedData = await scrapper()
 
-    console.log(scrappedData[0].notice_title)
-
     const lastNotice = await getLastNotice()
 
     const index = scrappedData.findIndex(
@@ -59,7 +57,7 @@ const postNotice = async (notices) => {
           async (link) =>
             `${link.file_title}: ${await createShortLink(link.file_link)}\n`
         )
-      )}\nSource: https://ctevtexam.org.np\n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
+      )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
     })
   })
 }

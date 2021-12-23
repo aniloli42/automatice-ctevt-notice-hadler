@@ -1,5 +1,6 @@
 const axios = require("axios")
 const dotenv = require("dotenv")
+const FB = require("fb")
 
 const Token = require("../models/token")
 
@@ -20,6 +21,7 @@ const getToken = async () => {
         token.access_token,
         token._id
       )
+
       return response.access_token
     }
 
@@ -49,16 +51,16 @@ const requestData = async () => {
 }
 
 const createPost = async ({ message }) => {
-  const encodedMessage = encodeURI(message)
   try {
     const accessToken = await getToken()
-    const response = await axios.post(
-      `${BASE_URL}/feed?message=${encodedMessage}&access_token=${accessToken}`
-    )
 
-    return response.data
-  } catch (err) {
-    console.log(err?.response?.data)
+    FB.setAccessToken(accessToken)
+
+    FB.api("/me/feed", "POST", { message }, function (response) {
+      console.log("Notice Response: ", response)
+    })
+  } catch (e) {
+    console.log(e)
   }
 }
 
