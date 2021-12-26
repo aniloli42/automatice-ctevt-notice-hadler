@@ -12,6 +12,7 @@ const noticeReviewAndPost = async () => {
     const index = scrappedData.findIndex(
       (data) =>
         data.notice_title == lastNotice.notice_title &&
+        data.published_date == lastNotice.published_date &&
         data.file_links.length == lastNotice.file_links.length &&
         data.published_by == lastNotice.published_by
     )
