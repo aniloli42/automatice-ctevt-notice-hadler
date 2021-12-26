@@ -10,8 +10,13 @@ const noticeReviewAndPost = async () => {
     const lastNotice = await getLastNotice()
 
     const index = scrappedData.findIndex(
-      (data) => data.notice_title == lastNotice.notice_title
+      (data) =>
+        data.notice_title == lastNotice.notice_title &&
+        data.file_links.length == lastNotice.file_links.length &&
+        data.published_by == lastNotice.published_by
     )
+
+    console.log("Last Notice index is ", index)
 
     if (index === 0) return
 
