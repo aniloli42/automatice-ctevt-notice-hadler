@@ -6,9 +6,9 @@ const scrapper = async () => {
     args: ["--no-sandbox"],
   })
 
-  page.setDefaultTimeout(0)
-
   const page = await browser.newPage()
+
+  page.setDefaultTimeout(0)
 
   await page.goto("http://202.166.206.52:4443/itms/notice_details", {
     waitUntil: "networkidle2",
