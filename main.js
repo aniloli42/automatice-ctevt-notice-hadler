@@ -38,8 +38,6 @@ setInterval(() => {
 }, 2700000)
 
 // handle notice fetching, comparing, post and save every 3 mins of interval
-// setInterval(() => {
-//   noticeReviewAndPost()
-// }, 180000)
-
-noticeReviewAndPost()
+setInterval(() => {
+  noticeReviewAndPost()
+}, 180000)
