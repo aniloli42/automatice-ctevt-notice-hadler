@@ -18,8 +18,6 @@ const noticeReviewAndPost = async () => {
     if (index !== -1) scrappedData.splice(index)
 
     await postNotice(scrappedData.reverse())
-
-    await saveNotices(scrappedData.reverse())
   } catch (error) {
     console.log(error)
   }
@@ -60,6 +58,8 @@ const postNotice = async (notices) => {
       )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
     })
   })
+
+  await saveNotices(notices)
 }
 
 module.exports = noticeReviewAndPost

@@ -12,11 +12,11 @@ const getToken = async () => {
   try {
     const token = await Token.findOne()
 
-    if (!token) return console.log("Token Not Available")
+    const currentTime = Date.now() - 60000
 
-    const currentTime = Date.now()
+    if (!token) return console.log("Token not Available")
 
-    if (token.expiresIn < currentTime) {
+    if (token?.expires_in < currentTime) {
       const response = await regenerateAccessToken(
         token.access_token,
         token._id
@@ -66,20 +66,18 @@ const createPost = async ({ message }) => {
 
 const regenerateAccessToken = async (token, _id) => {
   try {
-    const url = `https://graph.facebook.com/v12.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.FACEBOOK_CLIENT_ID}&client_secret=${process.env.FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${token}`
+    const url = `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.FACEBOOK_CLIENT_ID}&client_secret=${process.env.FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${token}`
 
-    const getTime = Date.now()
+    const getTime = Date.now() - 120000
 
     const response = await axios.get(url)
+    const { access_token, expires_in } = await response.data
+    const expiresAt = expires_in * 1000 + getTime
 
-    const updateToken = await Token.findOne({ _id })
-
-    const { access_token, expiresIn } = await response.data
-
-    const expiresAt = expiresIn + getTime
+    const updateToken = await Token.findOne({ _id }).sort({ _id: -1 })
 
     updateToken.access_token = access_token
-    updateToken.expiresIn = expiresAt
+    updateToken.expires_in = expiresAt
 
     await updateToken.save()
 
