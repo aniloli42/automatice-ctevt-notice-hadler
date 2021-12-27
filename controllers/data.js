@@ -7,6 +7,8 @@ const noticeReviewAndPost = async () => {
   try {
     const scrappedData = await scrapper()
 
+    if (scrappedData === null) return
+
     const lastNotice = await getLastNotice()
 
     const index = scrappedData.findIndex(
@@ -17,15 +19,17 @@ const noticeReviewAndPost = async () => {
         data.published_by == lastNotice.published_by
     )
 
-    console.log("Last Notice index is ", index)
-
     if (index === 0) return
 
     if (index !== -1) scrappedData.splice(index)
 
-    await postNotice(scrappedData.reverse())
+    const postResponse = await postNotice(scrappedData.reverse())
+
+    // prevent the post save in database before post, if any post fails then post will not save
+    if (postResponse === null) return
+    await saveNotices(scrappedData.reverse())
   } catch (error) {
-    console.log(error)
+    console.error(error.message)
   }
 }
 
@@ -35,7 +39,7 @@ const getLastNotice = async () => {
 
     return lastNotice
   } catch (error) {
-    console.log(error)
+    console.error(error.message)
   }
 }
 
@@ -43,29 +47,34 @@ const saveNotices = async (notices) => {
   try {
     await Data.insertMany(notices)
   } catch (error) {
-    console.log(error)
+    console.error(error.message)
   }
 }
 
 const postNotice = async (notices) => {
-  notices.forEach(async (notice) => {
-    await createPost({
-      message: `${notice.notice_title}\n\nPublished Date: ${
-        notice.published_date
-      }\nNotice Link: ${await createShortLink(
-        notice.notice_link
-      )}\nPublished By: ${
-        notice.published_by
-      }\n\nAttached File Links:\n${await Promise.all(
-        notice.file_links.map(
-          async (link) =>
-            `${link.file_title}: ${await createShortLink(link.file_link)}\n`
-        )
-      )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
+  try {
+    notices.forEach(async (notice) => {
+      await createPost({
+        message: `${notice.notice_title}\n\nPublished Date: ${
+          notice.published_date
+        }\nNotice Link: ${await createShortLink(
+          notice.notice_link
+        )}\nPublished By: ${
+          notice.published_by
+        }\n\nAttached File Links:\n${await Promise.all(
+          notice.file_links.map(
+            async (link) =>
+              `${link.file_title}: ${await createShortLink(link.file_link)}\n`
+          )
+        )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
+      })
     })
-  })
 
-  await saveNotices(notices)
+    return true
+  } catch (error) {
+    console.error(error.message)
+    return null
+  }
 }
 
 module.exports = noticeReviewAndPost
