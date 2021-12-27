@@ -6,7 +6,7 @@ const scrapper = async () => {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--incognito"],
+    args: ["--incognito", "--no-sandbox"],
     defaultViewport: null,
   })
 
