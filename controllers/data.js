@@ -21,9 +21,9 @@ const noticeReviewAndPost = async () => {
         ) &&
         data.published_by == lastNotice.published_by
     )
-    console.log(index)
 
-    return
+    console.log(`Last Notice index is ${index}`)
+
     if (index === 0) return
 
     if (index !== -1) scrappedData.splice(index)
