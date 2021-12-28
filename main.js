@@ -32,12 +32,12 @@ app.get("/status", async (req, res) => {
   res.send(rest)
 })
 
-// keep server alive, call app every 30 mins of interval
+// keep server alive, call app every 10 mins of interval
 setInterval(() => {
   axios.get("https://ctevtnotice.herokuapp.com/")
-}, 1800000)
+}, 600000)
 
-// handle notice fetching, comparing, post and save every 3 mins of interval
+// handle notice fetching, comparing, post and save every 5 mins of interval
 setInterval(() => {
   noticeReviewAndPost()
-}, 180000)
+}, 300000)
