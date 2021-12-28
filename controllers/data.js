@@ -9,40 +9,41 @@ const noticeReviewAndPost = async () => {
 
     if (scrappedData === null) return
 
-    const lastNotice = await getLastNotice()
+    const oldNotices = await getOldNotices()
 
-    const index = scrappedData.findIndex(
-      (data) =>
-        data.notice_title == lastNotice.notice_title &&
-        data.published_date == lastNotice.published_date &&
-        data.file_links.every(
-          (link, index) =>
-            link.file_title === lastNotice.file_links[index].file_title
-        ) &&
-        data.published_by == lastNotice.published_by
-    )
+    const newNotices = scrappedData.filter((data) => {
+      const match = oldNotices.some((oldNotice) => {
+        return (
+          oldNotice.notice_title === data.notice_title &&
+          oldNotice.published_date === data.published_date &&
+          oldNotice.published_by === data.published_by &&
+          oldNotice.file_links.every(
+            (fileLink, index) =>
+              fileLink.file_title === data.file_links[index].file_title
+          )
+        )
+      })
 
-    console.log(`Last Notice index is ${index}`)
+      if (!match) return data
+    })
 
-    if (index === 0) return
+    if (newNotices.length === 0) return
 
-    if (index !== -1) scrappedData.splice(index)
-
-    const postResponse = await postNotice(scrappedData.reverse())
+    const postResponse = await postNotice(newNotices.reverse())
 
     // prevent the post save in database before post, if any post fails then post will not save
     if (postResponse === null) return
-    await saveNotices(scrappedData.reverse())
+    await saveNotices(newNotices.reverse())
   } catch (error) {
     console.error(error.message)
   }
 }
 
-const getLastNotice = async () => {
+const getOldNotices = async () => {
   try {
-    const lastNotice = await Data.findOne().sort({ _id: -1 })
+    const notices = await Data.find().sort({ _id: -1 }).limit(10)
 
-    return lastNotice
+    return notices
   } catch (error) {
     console.error(error.message)
   }
