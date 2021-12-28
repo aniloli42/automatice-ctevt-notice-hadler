@@ -15,10 +15,15 @@ const noticeReviewAndPost = async () => {
       (data) =>
         data.notice_title == lastNotice.notice_title &&
         data.published_date == lastNotice.published_date &&
-        data.file_links.length == lastNotice.file_links.length &&
+        data.file_links.every(
+          (link, index) =>
+            link.file_title === lastNotice.file_links[index].file_title
+        ) &&
         data.published_by == lastNotice.published_by
     )
+    console.log(index)
 
+    return
     if (index === 0) return
 
     if (index !== -1) scrappedData.splice(index)
