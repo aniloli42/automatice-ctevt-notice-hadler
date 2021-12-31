@@ -12,28 +12,18 @@ const noticeReviewAndPost = async () => {
     const oldNotices = await getOldNotices()
 
     const newNotices = scrappedData.filter((data) => {
-      const match = oldNotices.some((oldNotice) => {
-        return (
-          oldNotice.notice_title === data.notice_title &&
-          oldNotice.published_date === data.published_date &&
-          oldNotice.published_by === data.published_by &&
-          oldNotice.file_links.every(
-            (fileLink, index) =>
-              fileLink.file_title === data.file_links[index].file_title
-          )
-        )
-      })
+      const match = oldNotices.some(
+        (oldNotice) => oldNotice.notice_link === data.notice_link
+      )
 
       if (!match) return data
     })
 
+    console.log(newNotices.length)
+
     if (newNotices.length === 0) return
 
-    const postResponse = await postNotice(newNotices.reverse())
-
-    // prevent the post save in database before post, if any post fails then post will not save
-    if (postResponse === null) return
-    await saveNotices(newNotices.reverse())
+    newNotices.reverse().forEach(async (notice) => await postNotice(notice))
   } catch (error) {
     console.error(error.message)
   }
@@ -41,7 +31,7 @@ const noticeReviewAndPost = async () => {
 
 const getOldNotices = async () => {
   try {
-    const notices = await Data.find().sort({ _id: -1 }).limit(10)
+    const notices = await Data.find().sort({ _id: -1 }).limit(20)
 
     return notices
   } catch (error) {
@@ -49,37 +39,35 @@ const getOldNotices = async () => {
   }
 }
 
-const saveNotices = async (notices) => {
+const saveNotices = async (notice) => {
   try {
-    await Data.insertMany(notices)
+    const newNotice = new Data(notice)
+    await newNotice.save()
   } catch (error) {
     console.error(error.message)
   }
 }
 
-const postNotice = async (notices) => {
+const postNotice = async (notice) => {
   try {
-    notices.forEach(async (notice) => {
-      await createPost({
-        message: `${notice.notice_title}\n\nPublished Date: ${
-          notice.published_date
-        }\nNotice Link: ${await createShortLink(
-          notice.notice_link
-        )}\nPublished By: ${
-          notice.published_by
-        }\n\nAttached File Links:\n${await Promise.all(
-          notice.file_links.map(
-            async (link) =>
-              `${link.file_title}: ${await createShortLink(link.file_link)}\n`
-          )
-        )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
-      })
-    })
+    await saveNotices(notice)
 
-    return true
+    await createPost({
+      message: `${notice.notice_title}\n\nPublished Date: ${
+        notice.published_date
+      }\nNotice Link: ${await createShortLink(
+        notice.notice_link
+      )}\nPublished By: ${
+        notice.published_by
+      }\n\nAttached File Links:\n${await Promise.all(
+        notice.file_links.map(
+          async (link) =>
+            `${link.file_title}: ${await createShortLink(link.file_link)}\n`
+        )
+      )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
+    })
   } catch (error) {
     console.error(error.message)
-    return null
   }
 }
 
