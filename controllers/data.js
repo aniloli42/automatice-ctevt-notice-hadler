@@ -13,7 +13,9 @@ const noticeReviewAndPost = async () => {
 
     const newNotices = scrappedData.filter((data) => {
       const match = oldNotices.some(
-        (oldNotice) => oldNotice.notice_link === data.notice_link
+        (oldNotice) =>
+          oldNotice.notice_link === data.notice_link &&
+          oldNotice.published_date === data.published_date
       )
 
       if (!match) return data
