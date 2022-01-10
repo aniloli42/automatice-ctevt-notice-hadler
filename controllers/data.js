@@ -6,12 +6,13 @@ const createShortLink = require("./../services/linkShortner")
 const noticeReviewAndPost = async () => {
   try {
     const scrappedData = await scrapper()
-
     if (scrappedData === null) return
+
+    scrappedData.splice(8)
 
     const oldNotices = await getOldNotices()
 
-    const newNotices = scrappedData.filter((data) => {
+    const notices = scrappedData.filter((data) => {
       const match = oldNotices.some(
         (oldNotice) =>
           oldNotice.notice_link === data.notice_link &&
@@ -21,9 +22,11 @@ const noticeReviewAndPost = async () => {
       if (!match) return data
     })
 
-    console.log(newNotices.length)
-
+    // filter the null value
+    const newNotices = notices.filter((notice) => notice && notice.notice_link)
     if (newNotices.length === 0) return
+
+    console.log(newNotices.length)
 
     newNotices.reverse().forEach(async (notice) => await postNotice(notice))
   } catch (error) {
@@ -33,7 +36,7 @@ const noticeReviewAndPost = async () => {
 
 const getOldNotices = async () => {
   try {
-    const notices = await Data.find().sort({ _id: -1 }).limit(20)
+    const notices = await Data.find().sort({ _id: -1 }).limit(10)
 
     return notices
   } catch (error) {
