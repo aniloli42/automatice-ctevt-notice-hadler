@@ -36,7 +36,7 @@ app.get("/notices", async (req, res) => {
 	try {
 		const notices = await getNotices()
 
-		return res.status(200).json({ notices })
+		return res.status(200).json(notices)
 	} catch (error) {
 		res.status(500).json({ message: error.message })
 	}
