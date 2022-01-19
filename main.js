@@ -1,19 +1,19 @@
-const express = require("express")
-const dotenv = require("dotenv")
-const axios = require("axios")
-const cors = require("cors")
+const express = require('express')
+const dotenv = require('dotenv')
+const axios = require('axios')
+const cors = require('cors')
 
-const connectDB = require("./config/db")
-const { requestData } = require("./services/facebook")
-const noticeReviewAndPost = require("./controllers/data")
-const getNotices = require("./helper/getNotices")
+const connectDB = require('./config/db')
+const { requestData } = require('./services/facebook')
+const noticeReviewAndPost = require('./controllers/data')
+const getNotices = require('./helper/getNotices')
 
 dotenv.config()
 const app = express()
 
 app.use(
 	cors({
-		methods: "GET",
+		methods: 'GET'
 	})
 )
 
@@ -28,11 +28,11 @@ app.listen(port, () => {
 })
 
 // intial server endpoint
-app.get("/", async (req, res) => {
-	res.send("Welcome To CTEVT NOTICE Handler Server")
+app.get('/', async (req, res) => {
+	res.send('Welcome To CTEVT NOTICE Handler Server')
 })
 
-app.get("/notices", async (req, res) => {
+app.get('/notices', async (req, res) => {
 	try {
 		const notices = await getNotices()
 
@@ -43,17 +43,12 @@ app.get("/notices", async (req, res) => {
 })
 
 // get the facebook status, which status endpoint
-app.get("/status", async (req, res) => {
+app.get('/status', async (req, res) => {
 	const response = await requestData()
 	const { id, ...rest } = response
 
 	res.send(rest)
 })
-
-// keep server alive, call app every 10 mins of interval
-setInterval(() => {
-	axios.get("https://ctevtnotice.herokuapp.com/")
-}, 600000)
 
 // handle notice fetching, comparing, post and save every 5 mins of interval
 setInterval(() => {
