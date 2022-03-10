@@ -19,14 +19,29 @@ const noticeReviewAndPost = async () => {
         (oldNotice) => oldNotice.notice_link === data.notice_link
       );
 
-      if (!match) return data;
+      if (!match) {
+        /* 
+        Check the wheather the post is available but link only changed
+        */
+        return (
+          !oldNotices.some(
+            (notice) =>
+              notice.notice_title === data.notice_title &&
+              notice.published_date === data.published_date
+          ) && data
+        );
+      }
     });
+
+    console.log(notices);
 
     // filter the null value
     const newNotices = notices.filter((notice) => notice && notice.notice_link);
     if (newNotices.length === 0) return;
 
-    console.log(newNotices.length);
+    console.log(`New Notice: ${newNotices.length}`);
+
+    return;
 
     newNotices.reverse().forEach(async (notice) => await postNotice(notice));
   } catch (error) {
