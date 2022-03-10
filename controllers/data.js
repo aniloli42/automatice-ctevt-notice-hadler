@@ -33,15 +33,11 @@ const noticeReviewAndPost = async () => {
       }
     });
 
-    console.log(notices);
-
     // filter the null value
     const newNotices = notices.filter((notice) => notice && notice.notice_link);
     if (newNotices.length === 0) return;
 
     console.log(`New Notice: ${newNotices.length}`);
-
-    return;
 
     newNotices.reverse().forEach(async (notice) => await postNotice(notice));
   } catch (error) {
