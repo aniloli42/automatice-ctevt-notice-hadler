@@ -2,8 +2,7 @@ const axios = require("axios");
 const FB = require("fb");
 
 const Token = require("../models/token");
-
-const FACEBOOK_API_BASE_URL = process.env.FACEBOOK_API_BASE_URL;
+const { config } = require("../config/env");
 
 const getToken = async () => {
   try {
@@ -30,7 +29,7 @@ const requestPageInformation = async () => {
     const accessToken = await getToken();
 
     const response = await axios.get(
-      `${FACEBOOK_API_BASE_URL}?fields=id%2Cname%2Cfollowers_count%2Cunread_message_count%2Cunseen_message_count&access_token=${accessToken}`,
+      `${config.FACEBOOK_API_BASE_URL}?fields=id%2Cname%2Cfollowers_count%2Cunread_message_count%2Cunseen_message_count&access_token=${accessToken}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +59,7 @@ const createPost = async ({ message }) => {
 
 const generateAccessToken = async (token, _id) => {
   try {
-    const url = `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.FACEBOOK_CLIENT_ID}&client_secret=${process.env.FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${token}`;
+    const url = `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${config.FACEBOOK_CLIENT_ID}&client_secret=${config.FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${token}`;
 
     const getTime = Date.now() - 120000;
 

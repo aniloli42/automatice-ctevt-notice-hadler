@@ -1,7 +1,8 @@
-require("dotenv").config()
-const axios = require("axios")
+require("dotenv").config();
+const axios = require("axios");
+const { config } = require("../config/env");
 
-const { BITLY_ACCESS_TOKEN, BITLY_API_URL } = process.env
+const { BITLY_ACCESS_TOKEN, BITLY_API_URL } = config;
 
 const createShortLink = async (longURL) => {
   try {
@@ -16,12 +17,12 @@ const createShortLink = async (longURL) => {
           Authorization: `Bearer ${BITLY_ACCESS_TOKEN}`,
         },
       }
-    )
+    );
 
-    return res.data.link
+    return res.data.link;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-module.exports = createShortLink
+module.exports = createShortLink;

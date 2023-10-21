@@ -5,6 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const { requestPageInformation } = require("./services/facebook");
 const getNotices = require("./helper/getNotices");
+const { config } = require("./config/env");
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(
 // establish the connection to MongoDB
 connectDB();
 
-const port = process.env.PORT || 4001;
+const port = config.PORT || 4001;
 
 // listen port for server response
 app.listen(port, () => {
