@@ -2,26 +2,22 @@
   "name": "ctevt-scrapper",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "node main.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon main.js"
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.24.0",
+    "axios": "^1.5.1",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.3.1",
     "express": "^4.17.2",
-    "fb": "^2.0.0",
-    "mongoose": "^6.1.2",
-    "puppeteer": "^13.0.0",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
+    "mongoose": "^7.6.3",
+    "puppeteer": "^21.4.0",
+    "uuid": "^9.0.1"
   }
 }

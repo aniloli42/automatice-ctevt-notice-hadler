@@ -1,9 +1,9 @@
 const scrapper = require("../services/scrapper");
 const Data = require("./../models/data");
-const { createPost } = require("./../services/facebook");
-const createShortLink = require("./../services/linkShortner");
+const { createPost } = require("../services/facebook");
+const createShortLink = require("../services/linkShortner");
 
-const getOldNotices = require("./../helper/getNotices");
+const getOldNotices = require("../helper/getNotices");
 
 const noticeReviewAndPost = async () => {
   try {
@@ -70,7 +70,7 @@ const postNotice = async (notice) => {
           async (link) =>
             `${link.file_title}: ${await createShortLink(link.file_link)}\n`
         )
-      )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`
+      )}\nSource: https://ctevtexam.org.np \n\n#techaboutneed #ctevtnotices #ctevtexam #ctevtorg`,
     });
   } catch (error) {
     console.error(error.message);
