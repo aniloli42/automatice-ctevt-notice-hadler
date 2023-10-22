@@ -1,26 +1,23 @@
-const axios = require("axios");
-const FB = require("fb");
-
-const Token = require("../models/token");
-const { config } = require("../config/env");
+import axios from "axios";
+import Token from "../models/token.model.js";
+import { config } from "../config/env.js";
 
 const getToken = async () => {
   try {
-    const token = await Token.findOne();
+    const pageAccessToken = await Token.findOne({
+      token_type: "page_access_token",
+    });
 
-    const currentTime = Date.now() - 60000;
+    const currentTime = Date.now() / 1000;
 
-    if (!token) return console.log("Token not Available");
+    if (!pageAccessToken) return await generatePageAccessToken();
 
-    if (token?.expires_in < currentTime) {
-      const response = await generateAccessToken(token.access_token, token._id);
+    if (pageAccessToken?.expires_in < currentTime)
+      return await generatePageAccessToken();
 
-      return response.access_token;
-    }
-
-    return token.access_token;
+    return pageAccessToken.access_token;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -28,14 +25,22 @@ const requestPageInformation = async () => {
   try {
     const accessToken = await getToken();
 
-    const response = await axios.get(
-      `${config.FACEBOOK_API_BASE_URL}?fields=id%2Cname%2Cfollowers_count%2Cunread_message_count%2Cunseen_message_count&access_token=${accessToken}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    const feedURL = new URL(
+      `/v18.0/${config.FACEBOOK_PAGE_ID}`,
+      config.FACEBOOK_API_BASE_URL
     );
+
+    const serachParams = new URLSearchParams();
+    serachParams.set("fields", "id,name,followers_count");
+
+    feedURL.searchParams = serachParams;
+
+    const response = await axios.get(feedURL.href, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     return response.data;
   } catch (error) {
@@ -47,37 +52,67 @@ const createPost = async ({ message }) => {
   try {
     const accessToken = await getToken();
 
-    FB.setAccessToken(accessToken);
+    const postNoticeURL = new URL(
+      `/v18.0/${config.FACEBOOK_PAGE_ID}/feed`,
+      config.FACEBOOK_API_BASE_URL
+    );
 
-    FB.api("/me/feed", "POST", { message }, function (response) {
-      console.log("Notice Response: ", response);
-    });
-  } catch (e) {
-    console.log(e);
+    const noticePostResponse = await axios.post(
+      postNoticeURL.href,
+      { message, published: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const noticePostResponseData = await noticePostResponse.data;
+
+    return noticePostResponseData.id;
+  } catch (error) {
+    console.error(error);
   }
 };
 
-const generateAccessToken = async (token, _id) => {
+const generatePageAccessToken = async (_id) => {
   try {
-    const url = `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${config.FACEBOOK_CLIENT_ID}&client_secret=${config.FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${token}`;
+    const userAccessToken = await Token.findOne({
+      token_type: "user_access_token",
+    });
 
-    const getTime = Date.now() - 120000;
+    if (!userAccessToken) throw new Error(`User Access Token Not Found!!!`);
 
-    const response = await axios.get(url);
-    const { access_token, expires_in } = await response.data;
-    const expiresAt = expires_in * 1000 + getTime;
+    const currentTime = Date.now() / 1000;
+
+    if (userAccessToken.expires_in < currentTime)
+      throw new Error(`User Access Token Expired`);
+
+    const updateTokenURL = new URL(
+      `/${config.FACEBOOK_USER_ID}/accounts`,
+      config.FACEBOOK_API_BASE_URL
+    );
+
+    const searchParams = new URLSearchParams();
+    searchParams.set("access_token", userAccessToken.access_token); // User Access Token
+
+    updateTokenURL.searchParams = searchParams;
+
+    const getAccessTokenResponse = await axios.get(updateToken.href);
+    const { access_token, expires_in } = await getAccessTokenResponse.data;
 
     const updateToken = await Token.findOne({ _id }).sort({ _id: -1 });
 
     updateToken.access_token = access_token;
-    updateToken.expires_in = expiresAt;
+    updateToken.expires_in = expires_in;
 
     await updateToken.save();
 
     return access_token;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
-module.exports = { createPost, requestPageInformation };
+export { createPost, requestPageInformation };

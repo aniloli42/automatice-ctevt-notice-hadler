@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 const ctevtSchema = mongoose.Schema(
   {
@@ -25,8 +25,8 @@ const ctevtSchema = mongoose.Schema(
     },
   },
   { timestamps: true }
-)
+);
 
-const data = mongoose.model("ctevtnotices", ctevtSchema)
+const notice = mongoose.model("notice", ctevtSchema);
 
-module.exports = data
+export default notice;

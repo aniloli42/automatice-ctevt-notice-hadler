@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 const tokenSchema = mongoose.Schema(
   {
@@ -16,8 +16,8 @@ const tokenSchema = mongoose.Schema(
     },
   },
   { timestamps: true }
-)
+);
 
-const token = mongoose.model("facebooktoken", tokenSchema)
+const token = mongoose.model("token", tokenSchema);
 
-module.exports = token
+export default token;

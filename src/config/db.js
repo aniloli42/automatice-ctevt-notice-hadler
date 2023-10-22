@@ -1,18 +1,16 @@
-const mongoose = require("mongoose")
-const dotenv = require("dotenv")
+import mongoose from "mongoose";
+import { config } from "./env.js";
 
-dotenv.config()
-
-const connectDB = () => {
-  mongoose.connect(process.env.DB_URL)
+const connectMongoDB = () => {
+  mongoose.connect(config.MONGODB_CONNECTION_URL);
 
   mongoose.connection.on("error", (err) => {
-    return err
-  })
+    if (err) throw new Error(err);
+  });
 
   mongoose.connection.on("open", () => {
-    console.log("Connected To Database")
-  })
-}
+    console.log("Connected With Mongo DB");
+  });
+};
 
-module.exports = connectDB
+export default connectMongoDB;

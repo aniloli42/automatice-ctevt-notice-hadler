@@ -1,11 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-
-const connectDB = require("./config/db");
-const { requestPageInformation } = require("./services/facebook");
-const getNotices = require("./helper/getNotices");
-const { config } = require("./config/env");
+import cors from "cors";
+import "dotenv/config";
+import express from "express";
+import connectMongoDB from "./config/db.js";
+import { config } from "./config/env.js";
+import reviewNoticeAndPost from "./controllers/notice.controller.js";
 
 const app = express();
 
@@ -15,35 +13,12 @@ app.use(
   })
 );
 
-// establish the connection to MongoDB
-connectDB();
+connectMongoDB();
 
-const port = config.PORT || 4001;
+setTimeout(reviewNoticeAndPost, 5000);
 
-// listen port for server response
-app.listen(port, () => {
-  console.log(`Server is live on ${port}`);
-});
+app.get("/", async (_, res) =>
+  res.send("Welcome To CTEVT NOTICE Handler Server")
+);
 
-// intial server endpoint
-app.get("/", async (req, res) => {
-  res.send("Welcome To CTEVT NOTICE Handler Server");
-});
-
-app.get("/notices", async (req, res) => {
-  try {
-    const notices = await getNotices();
-
-    return res.status(200).json(notices);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// get the facebook status, which status endpoint
-app.get("/status", async (req, res) => {
-  const response = await requestPageInformation();
-  const { id, ...rest } = response;
-
-  res.send(rest);
-});
+app.listen(config.PORT, console.log(`Server is live on ${config.PORT}`));

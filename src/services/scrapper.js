@@ -1,12 +1,9 @@
-const puppeteer = require("puppeteer");
-const { config } = require("../config/env");
-require("dotenv").config();
+import puppeteer from "puppeteer";
+import { config } from "../config/env.js";
 
 const scrapper = async () => {
-  const browseURL = config.WEBSITE_URL;
-
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     args: ["--incognito", "--no-sandbox"],
     defaultViewport: null,
   });
@@ -14,45 +11,36 @@ const scrapper = async () => {
   try {
     const page = await browser.newPage();
 
-    await page.goto(browseURL, {
+    await page.goto(config.WEBSITE_URL, {
       waitUntil: "networkidle2",
       timeout: 0,
     });
 
-    await page.waitForSelector(
-      "#table1 > tbody > tr:nth-child(1) > td:nth-child(2)",
-      { visible: true }
-    );
-
-    const scrapeData = await page.evaluate(() => {
-      let data = [];
-
-      const tbody = document.querySelector("#table1 > tbody");
-
-      Array.from(tbody.children).forEach((notice) => {
-        data.push({
-          published_date: notice.children[1].innerText,
-          notice_title: notice.children[2].children[0].innerText,
-          notice_link: notice.children[2].children[0].href,
-          file_links: [...notice.children[3].children].map((link) => {
-            return { file_link: link.href, file_title: link.children[0].title };
-          }),
-          published_by: notice.children[4].innerText,
-        });
-      });
-
-      return data;
-    });
-
-    await browser.close();
+    const scrapeData = await page.evaluate(scrapNotices);
 
     return scrapeData;
   } catch (error) {
-    browser.close();
     console.error(error.message);
-
-    return null;
+  } finally {
+    process.once("SIGTERM", async () => await closeBrowser(browser));
   }
 };
 
-module.exports = scrapper;
+async function closeBrowser(browser) {
+  console.log("Shutting Down...");
+  console.log("----------------------------");
+  if (browser) await browser.close();
+  process.exit();
+}
+
+function scrapNotices() {
+  const TABLE_BODY_SELECTOR = "#table1 > tbody";
+  const tBody = document.querySelector(TABLE_BODY_SELECTOR);
+
+  const TABLE_ROW_SELECTOR = "tr";
+  const tRow = tBody.querySelectorAll(TABLE_ROW_SELECTOR);
+
+  console.log(tBody, tRow);
+}
+
+export default scrapper;

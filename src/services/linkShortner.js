@@ -1,6 +1,5 @@
-require("dotenv").config();
-const axios = require("axios");
-const { config } = require("../config/env");
+import axios from "axios";
+import { config } from "../config/env.js";
 
 const { BITLY_ACCESS_TOKEN, BITLY_API_URL } = config;
 
@@ -25,4 +24,4 @@ const createShortLink = async (longURL) => {
   }
 };
 
-module.exports = createShortLink;
+export default createShortLink;
