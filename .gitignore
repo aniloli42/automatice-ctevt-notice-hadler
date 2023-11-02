@@ -1,6 +1,3 @@
-# private files
-test.rest
-
-# 
 node_modules
-.env
+dist
+.env*
