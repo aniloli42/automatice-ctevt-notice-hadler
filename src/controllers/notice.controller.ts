@@ -64,21 +64,32 @@ const reviewNoticeAndPost = async () => {
 const filterNewNotices = async (scrappedNotices: Notice[]) => {
 	const oldNotices = await getStoredNotices();
 
-	if (!oldNotices?.length) return scrappedNotices;
+	if (oldNotices?.length === 0) return scrappedNotices;
 
-	const newNotices = scrappedNotices.filter((scrappedNotice) =>
-		oldNotices.every((oldNotice) => filterNewNotice(scrappedNotice, oldNotice))
-	);
+	const newNotices: Notice[] = [];
+
+	for await (const notice of scrappedNotices) {
+		const isNewNotice = await filterNewNotice(notice);
+
+		if (isNewNotice) newNotices.push(notice);
+	}
 
 	return newNotices;
 };
 
-const filterNewNotice = (newNotice: Notice, oldNotice: Notice) => {
-	const isPublishedAtMatched = newNotice.publishedAt !== oldNotice.publishedAt;
-	const isNoticeTitleMatched = newNotice.noticeTitle !== oldNotice.noticeTitle;
-	const isNoticeLinkMatched = newNotice.noticeLink !== oldNotice.noticeLink;
+const filterNewNotice = async ({
+	noticeLink,
+	noticeTitle,
+	publishedAt,
+}: Notice) => {
+	const findOldNotice = await noticeModel.findOne({
+		publishedAt,
+		noticeTitle,
+		noticeLink,
+	});
 
-	return isPublishedAtMatched && isNoticeLinkMatched && isNoticeTitleMatched;
+	if (!findOldNotice) return true;
+	return false;
 };
 
 const saveNotice = async (notice: Notice, noticePostId: string) => {
@@ -111,7 +122,6 @@ const postNotice = async (notice: Notice): Promise<string> => {
 
 		return acc;
 	}, '')}
-	)}
 
 		#techaboutneed #ctevtnotices #ctevt
 		`,
