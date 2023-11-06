@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { config } from './env.js';
+import logger from '../utils/logger.js';
 
 const connectMongoDB = () => {
 	mongoose.connect(config.MONGODB_CONNECTION_URL);
@@ -9,7 +10,7 @@ const connectMongoDB = () => {
 	});
 
 	mongoose.connection.on('open', () => {
-		console.log('Connected With Mongo DB');
+		logger.info('Connected With Mongo DB');
 	});
 };
 

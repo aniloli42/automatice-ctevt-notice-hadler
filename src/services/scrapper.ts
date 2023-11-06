@@ -1,6 +1,7 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { config } from '../config/env.js';
 import { Notice, File } from '../controllers/notice.controller.js';
+import logger from '../utils/logger.js';
 
 const scrapper = async () => {
 	const browser = await puppeteer.launch({
@@ -22,7 +23,7 @@ const scrapper = async () => {
 
 		return scrapedData;
 	} catch (error: unknown) {
-		console.error(error);
+		logger.error(error);
 	} finally {
 		process.once('SIGTERM', async () => await closeBrowser(browser));
 	}
