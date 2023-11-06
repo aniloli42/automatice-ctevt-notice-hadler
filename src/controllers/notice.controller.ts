@@ -2,10 +2,14 @@ import { Request, Response } from 'express';
 import noticeModel from '../models/notice.model.js';
 import { createPost } from '../services/facebook.js';
 import scrapper from '../services/scrapper.js';
+import logger from '../utils/logger.js';
+
+const HTTP_SUCCESS_STATUS = 200;
+const HTTP_NOT_FOUND_STATUS = 404;
 
 export const getNotices = async (_, res: Response) => {
 	const notices = await getStoredNotices();
-	res.status(200).json(notices);
+	res.status(HTTP_SUCCESS_STATUS).json(notices);
 };
 
 export const getNoticeById = async (req: Request, res: Response) => {
@@ -14,13 +18,14 @@ export const getNoticeById = async (req: Request, res: Response) => {
 
 		const notice = await noticeModel.findById(id);
 
-		if (!notice) return res.status(404).send('Notice not found');
+		if (!notice)
+			return res.status(HTTP_NOT_FOUND_STATUS).send('Notice not found');
 		delete notice.facebookPostId;
 
-		res.status(200).json(notice);
+		res.status(HTTP_SUCCESS_STATUS).json(notice);
 	} catch (error: unknown) {
-		if (error instanceof Error) console.error(error.message);
-		res.status(404).send('Invalid Notice Id');
+		if (error instanceof Error) logger.error(error.message);
+		res.status(HTTP_NOT_FOUND_STATUS).send('Invalid Notice Id');
 	}
 };
 
@@ -42,29 +47,31 @@ const reviewNoticeAndPost = async () => {
 	try {
 		const scrappedNotices = await scrapper();
 
-		if (scrappedNotices == undefined)
+		if (!scrappedNotices?.length)
 			throw new Error('Unable to scrap the notices. Check the issue');
 
 		const newNotices = await filterNewNotices(scrappedNotices);
 
-		if (newNotices.length === 0) return console.log('No New Notices Found');
+		if (!newNotices?.length) return logger.info('No New Notices Found');
 
-		console.log(`New Notices: ${newNotices.length}`);
+		logger.info(`New Notices: ${newNotices.length}`);
 
 		for await (const notice of newNotices) {
 			const noticePostId = await postNotice(notice);
+			logger.info(`Notice Posted: ${notice.noticeTitle}`);
+
 			await saveNotice(notice, noticePostId);
-			console.log(`Notice Posted: ${noticePostId}`);
+			logger.info(`Notice Saved: ${notice.noticeTitle}`);
 		}
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 
 const filterNewNotices = async (scrappedNotices: Notice[]) => {
 	const oldNotices = await getStoredNotices();
 
-	if (oldNotices?.length === 0) return scrappedNotices;
+	if (!oldNotices?.length) return scrappedNotices;
 
 	const newNotices: Notice[] = [];
 
@@ -128,8 +135,13 @@ const postNotice = async (notice: Notice): Promise<string> => {
 	});
 };
 
+const NO_OF_NOTICES = 10;
+
 export const getStoredNotices = async (): Promise<Notice[] | undefined> => {
-	return (await noticeModel.find().sort({ _id: -1 }).limit(10)) as Notice[];
+	return (await noticeModel
+		.find()
+		.sort({ _id: -1 })
+		.limit(NO_OF_NOTICES)) as Notice[];
 };
 
 export default reviewNoticeAndPost;

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import Token from '../models/token.model.js';
 import { config } from '../config/env.js';
+import logger from '../utils/logger.js';
 
 const getPageAccessToken = async () => {
 	try {
@@ -17,7 +18,7 @@ const getPageAccessToken = async () => {
 
 		return pageAccessToken.access_token;
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 
@@ -77,7 +78,7 @@ const createPost = async ({ message }: CreatePost) => {
 
 		return noticePostResponseData.id;
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 
@@ -98,7 +99,7 @@ const generatePageAccessToken = async () => {
 
 		return newPageAccessToken;
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };
 
