@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import Token from '../models/token.model.js';
 import { config } from '../config/env.js';
 import logger from '../utils/logger.js';
+const MILLISECOND_IN_SECOND = 1000;
 
 const getPageAccessToken = async () => {
 	try {
@@ -9,12 +10,12 @@ const getPageAccessToken = async () => {
 			token_type: 'page_access_token',
 		});
 
-		const currentTime = Date.now() / 1000;
+		const currentTime = Date.now() / MILLISECOND_IN_SECOND;
 
-		if (!pageAccessToken) return await generatePageAccessToken();
+		if (!pageAccessToken) return generatePageAccessToken();
 
 		if (pageAccessToken.expires_in < currentTime)
-			return await generatePageAccessToken();
+			return generatePageAccessToken();
 
 		return pageAccessToken.access_token;
 	} catch (error) {
@@ -110,7 +111,7 @@ const getUserAccessToken = async () => {
 
 	if (!userAccessToken) throw new Error('User Access Token Not Found!!!');
 
-	const currentTime = Date.now() / 1000;
+	const currentTime = Date.now() / MILLISECOND_IN_SECOND;
 	if (userAccessToken.expires_in < currentTime)
 		throw new Error('User Access Token Expired');
 

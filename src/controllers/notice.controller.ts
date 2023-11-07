@@ -107,8 +107,8 @@ const saveNotice = async (notice: Notice, noticePostId: string) => {
 	await newNotice.save();
 };
 
-const postNotice = async (notice: Notice): Promise<string> => {
-	return await createPost({
+const postNotice = (notice: Notice) => {
+	return createPost({
 		message: `
 		New Notice: ${notice.noticeTitle}
 
