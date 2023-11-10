@@ -6,7 +6,7 @@ import logger from './logger.js';
 const scrapper = async () => {
 	const browser = await puppeteer.launch({
 		headless: 'new',
-		args: ['--incognito', '--no-sandbox'],
+		args: ['--incognito', '--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
 

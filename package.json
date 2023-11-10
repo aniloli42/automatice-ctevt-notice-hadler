@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node dist/index.js",
-		"lint": "tsc",
+		"build": "tsc",
 		"dev": "run-p dev:*",
 		"dev:tsc": "tsc --watch --preserveWatchOutput",
 		"dev:node": "node --watch dist/index.js"
