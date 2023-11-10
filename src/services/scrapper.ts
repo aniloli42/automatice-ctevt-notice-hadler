@@ -1,7 +1,7 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { config } from '../config/env.js';
-import { Notice, File } from '../controllers/notice.controller.js';
-import logger from '../utils/logger.js';
+import { Notice, File } from '../notices/notice.controller.js';
+import logger from './logger.js';
 
 const scrapper = async () => {
 	const browser = await puppeteer.launch({

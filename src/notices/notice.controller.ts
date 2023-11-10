@@ -1,15 +1,13 @@
 import { Request, Response } from 'express';
-import noticeModel from '../models/notice.model.js';
-import { createPost } from '../services/facebook.js';
+import noticeModel from './notice.model.js';
+import { createPost } from '../services/facebook/facebook.js';
 import scrapper from '../services/scrapper.js';
-import logger from '../utils/logger.js';
-
-const HTTP_SUCCESS_STATUS = 200;
-const HTTP_NOT_FOUND_STATUS = 404;
+import logger from '../services/logger.js';
+import { HTTP_RESPONSE } from '../common/constants/http.constants.js';
 
 export const getNotices = async (_, res: Response) => {
 	const notices = await getStoredNotices();
-	res.status(HTTP_SUCCESS_STATUS).json(notices);
+	res.status(HTTP_RESPONSE.SUCCESS).json(notices);
 };
 
 export const getNoticeById = async (req: Request, res: Response) => {
@@ -19,13 +17,13 @@ export const getNoticeById = async (req: Request, res: Response) => {
 		const notice = await noticeModel.findById(id);
 
 		if (!notice)
-			return res.status(HTTP_NOT_FOUND_STATUS).send('Notice not found');
+			return res.status(HTTP_RESPONSE.NOT_FOUND).send('Notice not found');
 		delete notice.facebookPostId;
 
-		res.status(HTTP_SUCCESS_STATUS).json(notice);
+		res.status(HTTP_RESPONSE.SUCCESS).json(notice);
 	} catch (error: unknown) {
 		if (error instanceof Error) logger.error(error.message);
-		res.status(HTTP_NOT_FOUND_STATUS).send('Invalid Notice Id');
+		res.status(HTTP_RESPONSE.SERVER_ERROR).send('Invalid Notice Id');
 	}
 };
 
