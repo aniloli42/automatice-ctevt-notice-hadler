@@ -1,6 +1,6 @@
 import puppeteer, { Browser } from 'puppeteer';
-import { config } from '../config/env.js';
-import { Notice, File } from '../notices/notice.controller.js';
+import { config } from '../common/config/env.js';
+import { Notice, File } from '../notices/notice.type.js';
 import logger from './logger.js';
 
 const scrapper = async () => {

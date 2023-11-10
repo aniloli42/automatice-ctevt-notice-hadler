@@ -4,7 +4,7 @@ import express from 'express';
 import connectMongoDB from './common/config/db.js';
 import { config } from './common/config/env.js';
 import noticeRoutes from './notices/notice.route.js';
-import reviewNoticeAndPost from './notices/notice.controller.js';
+import reviewNoticeAndPost from './notices/notice.service.js';
 import logger from './services/logger.js';
 
 const app = express();
