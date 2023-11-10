@@ -1,4 +1,5 @@
 const config = {
+	// eslint-disable-next-line no-magic-numbers
 	PORT: isNaN(+process.env.PORT!) ? 8000 : +process.env.PORT!,
 
 	MONGODB_CONNECTION_URL: process.env.MONGODB_CONNECTION_URL ?? '',

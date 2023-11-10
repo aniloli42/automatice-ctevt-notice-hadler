@@ -1,11 +1,11 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import connectMongoDB from './config/db.js';
-import { config } from './config/env.js';
-import noticeRoutes from './routes/notice.route.js';
-import reviewNoticeAndPost from './controllers/notice.controller.js';
-import logger from './utils/logger.js';
+import connectMongoDB from './common/config/db.js';
+import { config } from './common/config/env.js';
+import noticeRoutes from './notices/notice.route.js';
+import reviewNoticeAndPost from './notices/notice.service.js';
+import logger from './services/logger.js';
 
 const app = express();
 
