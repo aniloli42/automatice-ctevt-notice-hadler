@@ -1,0 +1,10 @@
+services:
+  automation:
+    container_name: notice-automation
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - ./.env
+    ports:
+      - ${PORT}:8000
