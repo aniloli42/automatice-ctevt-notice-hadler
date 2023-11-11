@@ -22,7 +22,7 @@ export const getSavedNotices = (limit: unknown, offset: unknown) => {
 };
 
 export const getNoticeById = (id: unknown) => {
-	if (!id) throw new Error('Id is not defined');
+	if (id == undefined) throw new Error('Id is not defined');
 
 	return noticeModel.findById(id).select(FIELD_TO_BE_NEGLECTED);
 };
@@ -30,11 +30,14 @@ export const getNoticeById = (id: unknown) => {
 const reviewNoticeAndPost = async () => {
 	try {
 		const scrappedNotices = await scrapper();
-		if (!scrappedNotices?.length)
+		if (scrappedNotices == undefined || scrappedNotices?.length === 0)
 			throw new Error('Unable to scrap the notices. Check the issue');
 
 		const newNotices = await filterNewNotices(scrappedNotices);
-		if (!newNotices?.length) return logger.info('No New Notices Found');
+		if (newNotices?.length === 0) {
+			logger.info('No New Notices Found');
+			return;
+		}
 
 		logger.info(`New Notices: ${newNotices.length}`);
 
@@ -58,7 +61,8 @@ const postNewNotices = async (newNotices: Notice[]) => {
 const filterNewNotices = async (scrappedNotices: Notice[]) => {
 	const noOfNotices = 20;
 	const oldNotices = await getStoredNotices(noOfNotices);
-	if (!oldNotices?.length) return scrappedNotices;
+	if (oldNotices == undefined || oldNotices?.length === 0)
+		return scrappedNotices;
 
 	const newNotices: Notice[] = [];
 
