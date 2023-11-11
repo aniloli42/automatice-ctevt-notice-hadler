@@ -6,44 +6,44 @@ import logger from './logger.js';
 const scrapper = async () => {
 	const browser = await puppeteer.launch({
 		headless: 'new',
-		args: ['--incognito', '--no-sandbox', '--disable-setuid-sandbox'],
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
 
 	try {
-		const page = await browser.newPage();
+		process.once('SIGTERM', async () => await closeBrowser(browser));
 
+		const page = await browser.newPage();
 		await page.goto(config.WEBSITE_URL, {
 			waitUntil: 'networkidle2',
 			timeout: 0,
 		});
 
 		const scrapedData = await page.evaluate(scrapNotices);
-		await browser.close();
 
 		return scrapedData;
 	} catch (error: unknown) {
 		logger.error(error);
 	} finally {
-		process.once('SIGTERM', async () => await closeBrowser(browser));
+		await browser.close();
 	}
 };
 
 async function closeBrowser(browser: Browser) {
 	if (browser) await browser.close();
-	process.exit();
+	process.exit(1);
 }
 
 function scrapNotices(): Notice[] {
 	const TABLE_BODY_SELECTOR = '#table1 > tbody';
-	const tBody = document.querySelector(TABLE_BODY_SELECTOR);
+	const noticeTableBody = document.querySelector(TABLE_BODY_SELECTOR);
 
 	const TABLE_ROW_SELECTOR = 'tr';
-	const tRow = tBody?.querySelectorAll(TABLE_ROW_SELECTOR);
+	const noticeTableRow = noticeTableBody?.querySelectorAll(TABLE_ROW_SELECTOR);
 
-	if (!tRow) throw new Error('Unable to found notice elements');
+	if (!noticeTableRow) throw new Error('Unable to found notice elements');
 
-	const notices = Array.from(tRow).map((notice): Notice => {
+	const notices = Array.from(noticeTableRow).map((notice): Notice => {
 		const noticeElements = notice.children;
 
 		const publishedAt = (noticeElements[1] as HTMLElement).innerText;

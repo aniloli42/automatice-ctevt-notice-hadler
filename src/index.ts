@@ -16,16 +16,13 @@ app.use(
 	})
 );
 
-connectMongoDB();
+await connectMongoDB().then(() => setTimeout(reviewNoticeAndPost, 2000));
 
-const NOTICE_TRIGGER_AT = 5000;
-setTimeout(reviewNoticeAndPost, NOTICE_TRIGGER_AT);
-
-app.get('/', (_, res) => {
+app.get('/', (req, res) => {
 	res.redirect('/v1/api');
 });
 
-app.get('/v1/api', (_, res) =>
+app.get('/v1/api', (req, res) =>
 	res.send('Welcome To CTEVT NOTICE Handler Server')
 );
 
