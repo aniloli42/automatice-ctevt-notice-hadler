@@ -16,7 +16,6 @@
 		"linebreak-style": ["error", "unix"],
 		"quotes": ["error", "single"],
 		"semi": ["error", "always"],
-		"no-unused-vars": "warn",
-		"no-magic-numbers": "error"
+		"no-unused-vars": "warn"
 	}
 }
