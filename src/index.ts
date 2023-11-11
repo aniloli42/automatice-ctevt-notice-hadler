@@ -1,6 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
 import connectMongoDB from './common/config/db.js';
 import { config } from './common/config/env.js';
 import noticeRoutes from './notices/notice.route.js';
@@ -15,6 +16,8 @@ app.use(
 		origin: '*',
 	})
 );
+
+app.use(helmet());
 
 await connectMongoDB().then(() => setTimeout(reviewNoticeAndPost, 2000));
 
