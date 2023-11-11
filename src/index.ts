@@ -7,6 +7,11 @@ import { config } from './common/config/env.js';
 import noticeRoutes from './notices/notice.route.js';
 import reviewNoticeAndPost from './notices/notice.service.js';
 import logger from './services/logger.js';
+import { rateLimit } from 'express-rate-limit';
+import {
+	LIMIT_INTERVAL,
+	NO_OF_REQUESTS,
+} from './common/constants/app.constants.js';
 
 const app = express();
 
@@ -17,6 +22,14 @@ app.use(
 	})
 );
 
+const rateLimiter = rateLimit({
+	windowMs: LIMIT_INTERVAL,
+	limit: NO_OF_REQUESTS,
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+});
+
+app.use(rateLimiter);
 app.use(helmet());
 
 await connectMongoDB().then(() => setTimeout(reviewNoticeAndPost, 2000));
