@@ -21,10 +21,8 @@ export const getSavedNotices = (limit: unknown, offset: unknown) => {
 		.select(FIELD_TO_BE_NEGLECTED);
 };
 
-export const getNoticeById = (id: unknown) => {
-	if (id == undefined) throw new Error('Id is not defined');
-
-	return noticeModel.findById(id).select(FIELD_TO_BE_NEGLECTED);
+export const getNoticeById = async (id: unknown) => {
+	return await noticeModel.findById(id).select(FIELD_TO_BE_NEGLECTED);
 };
 
 const reviewNoticeAndPost = async () => {

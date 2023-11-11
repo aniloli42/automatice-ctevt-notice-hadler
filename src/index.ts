@@ -13,6 +13,7 @@ import {
 import noticeRoutes from './notices/notice.route.js';
 import reviewNoticeAndPost from './notices/notice.service.js';
 import logger from './services/logger.js';
+import { calledRouteLogger } from './middleware/route-logger.js';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(helmet());
 app.use(compression());
+app.use(calledRouteLogger);
 
 await connectMongoDB().then(() => setTimeout(reviewNoticeAndPost, 2000));
 
