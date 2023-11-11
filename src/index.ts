@@ -27,6 +27,9 @@ const rateLimiter = rateLimit({
 	limit: NO_OF_REQUESTS,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
+	validate: {
+		trustProxy: true,
+	},
 });
 
 app.use(cors(corsOptions));
