@@ -30,9 +30,6 @@ const rateLimiter = rateLimit({
 	limit: NO_OF_REQUESTS,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
-	validate: {
-		trustProxy: true,
-	},
 });
 
 app.use(cors(corsOptions));
@@ -40,6 +37,7 @@ app.use(rateLimiter);
 app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
+app.set('trust proxy', process.env.TRUST_PROXY_LEVEL ?? 1);
 
 await connectMongoDB().then(async () => {
 	runNoticeCheckWorker();
