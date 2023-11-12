@@ -10,15 +10,12 @@ import {
 	LIMIT_INTERVAL,
 	NO_OF_REQUESTS,
 } from './common/constants/app.constants.js';
+import { calledRouteLogger } from './middleware/route-logger.js';
 import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
-import { calledRouteLogger } from './middleware/route-logger.js';
-import { cpus } from 'os';
 import { runNoticeCheckWorker } from './services/worker.js';
 
 const app = express();
-
-console.log(cpus.length);
 
 const corsOptions: CorsOptions = {
 	methods: 'GET',
@@ -37,7 +34,7 @@ app.use(rateLimiter);
 app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
-app.set('trust proxy', process.env.TRUST_PROXY_LEVEL ?? 1);
+app.set('trust proxy', config.TRUST_PROXY_LEVEL);
 
 await connectMongoDB().then(async () => {
 	runNoticeCheckWorker();
@@ -46,7 +43,6 @@ await connectMongoDB().then(async () => {
 app.get('/', (req, res) => {
 	res.redirect('/v1/api');
 });
-
 app.get('/v1/api', (req, res) =>
 	res.send('Welcome To CTEVT NOTICE Handler Server')
 );
