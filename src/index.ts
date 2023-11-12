@@ -25,8 +25,10 @@ const corsOptions: CorsOptions = {
 const rateLimiter = rateLimit({
 	windowMs: LIMIT_INTERVAL,
 	limit: NO_OF_REQUESTS,
-	standardHeaders: 'draft-7',
-	legacyHeaders: false,
+	validate: {
+		xForwardedForHeader: true,
+		trustProxy: true,
+	},
 });
 
 app.use(cors(corsOptions));
