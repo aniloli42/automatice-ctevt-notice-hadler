@@ -11,11 +11,14 @@ import {
 	NO_OF_REQUESTS,
 } from './common/constants/app.constants.js';
 import noticeRoutes from './notices/notice.route.js';
-import reviewNoticeAndPost from './notices/notice.service.js';
 import logger from './services/logger.js';
 import { calledRouteLogger } from './middleware/route-logger.js';
+import { cpus } from 'os';
+import { runNoticeCheckWorker } from './services/worker.js';
 
 const app = express();
+
+console.log(cpus.length);
 
 const corsOptions: CorsOptions = {
 	methods: 'GET',
@@ -38,7 +41,9 @@ app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
 
-await connectMongoDB().then(() => setTimeout(reviewNoticeAndPost, 2000));
+await connectMongoDB().then(async () => {
+	runNoticeCheckWorker();
+});
 
 app.get('/', (req, res) => {
 	res.redirect('/v1/api');
