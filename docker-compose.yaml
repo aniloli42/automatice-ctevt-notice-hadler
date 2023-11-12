@@ -1,6 +1,6 @@
 services:
-  automation:
-    container_name: notice-automation
+  backend:
+    container_name: notice
     build:
       dockerfile: Dockerfile
       context: .
