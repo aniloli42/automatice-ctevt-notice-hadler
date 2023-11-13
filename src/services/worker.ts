@@ -8,18 +8,20 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const NOTICE_WORKER_PATH = resolve(__dirname, '../notices/notice.worker.js');
 
 export const checkNoticeEvent = new EventEmitter();
-checkNoticeEvent.on('checkNotice', () => {
-	runNoticeCheckWorker();
-});
+checkNoticeEvent.on('checkNotice', runNoticeCheckWorker);
 
-const runNoticeCheckWorker = () => {
+function runNoticeCheckWorker() {
+	checkNoticeEvent.off('checkNotice', runNoticeCheckWorker);
 	const worker = new Worker(NOTICE_WORKER_PATH, {
 		workerData: null,
 	});
 
-	worker.once('exit', () => logger.info('Notice checking process exited'));
+	worker.once('exit', () => {
+		logger.info('Notice checking process exited');
+		checkNoticeEvent.on('checkNotice', runNoticeCheckWorker);
+	});
 
 	worker.on('error', (error) => {
 		logger.error({ error });
 	});
-};
+}
