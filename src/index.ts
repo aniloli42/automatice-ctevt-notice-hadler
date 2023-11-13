@@ -13,7 +13,6 @@ import {
 import { calledRouteLogger } from './middleware/route-logger.js';
 import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
-import { runNoticeCheckWorker } from './services/worker.js';
 
 const app = express();
 
@@ -25,10 +24,11 @@ const corsOptions: CorsOptions = {
 const rateLimiter = rateLimit({
 	windowMs: LIMIT_INTERVAL,
 	limit: NO_OF_REQUESTS,
-	validate: {
-		xForwardedForHeader: true,
-		trustProxy: true,
-	},
+	message: `Too many requests from this IP, please try again after ${
+		LIMIT_INTERVAL / 1000
+	} seconds`,
+	legacyHeaders: true,
+	standardHeaders: true,
 });
 
 app.use(cors(corsOptions));
@@ -38,9 +38,7 @@ app.use(compression());
 app.use(calledRouteLogger);
 app.set('trust proxy', config.TRUST_PROXY_LEVEL);
 
-await connectMongoDB().then(async () => {
-	runNoticeCheckWorker();
-});
+await connectMongoDB();
 
 app.get('/', (req, res) => {
 	res.redirect('/v1/api');
