@@ -6,9 +6,11 @@
 	"type": "module",
 	"scripts": {
 		"start": "node dist/index.js",
-		"build": "tsc",
+		"lint": "tsc",
+		"build": "node esbuild.config.mjs",
 		"dev": "run-p dev:*",
 		"dev:tsc": "tsc --watch --preserveWatchOutput",
+		"dev:esbuild": "node esbuild.config.mjs --dev",
 		"dev:node": "node --watch dist/index.js"
 	},
 	"keywords": [],
