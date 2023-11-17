@@ -26,8 +26,15 @@ const rateLimiter = rateLimit({
 	legacyHeaders: false,
 	standardHeaders: true,
 	validate: {
-		trustProxy: false,
+		trustProxy: true,
+		xForwardedForHeader: true,
 	},
+});
+
+app.set('trust proxy', (ip: string) => {
+	const trustedIps = config.TRUST_PROXY_IPS.split(',');
+	if (trustedIps.includes(ip)) return true;
+	return false;
 });
 
 app.use(cors(corsOptions));
