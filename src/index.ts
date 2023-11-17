@@ -15,11 +15,17 @@ import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
 
 const app = express();
-
 const corsOptions: CorsOptions = {
 	methods: 'GET',
 	origin: '*',
 };
+
+app.set('trust proxy', (ip: string) => {
+	logger.info(ip);
+	const trustedIPs = config.TRUST_PROXY_IPS.split(',');
+	if (trustedIPs.includes(ip)) return true;
+	return false;
+});
 
 const rateLimiter = rateLimit({
 	windowMs: LIMIT_INTERVAL,
@@ -27,8 +33,6 @@ const rateLimiter = rateLimit({
 	message: `Too many requests from this IP, please try again after ${
 		LIMIT_INTERVAL / 1000
 	} seconds`,
-	legacyHeaders: true,
-	standardHeaders: true,
 });
 
 app.use(cors(corsOptions));
@@ -36,7 +40,6 @@ app.use(rateLimiter);
 app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
-app.set('trust proxy', config.TRUST_PROXY_LEVEL);
 
 await connectMongoDB();
 
