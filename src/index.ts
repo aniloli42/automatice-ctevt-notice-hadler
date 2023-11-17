@@ -20,19 +20,14 @@ const corsOptions: CorsOptions = {
 	origin: '*',
 };
 
-app.set('trust proxy', (ip: string) => {
-	logger.info(ip);
-	const trustedIPs = config.TRUST_PROXY_IPS.split(',');
-	if (trustedIPs.includes(ip)) return true;
-	return false;
-});
-
 const rateLimiter = rateLimit({
 	windowMs: LIMIT_INTERVAL,
 	limit: NO_OF_REQUESTS,
-	message: `Too many requests from this IP, please try again after ${
-		LIMIT_INTERVAL / 1000
-	} seconds`,
+	legacyHeaders: false,
+	standardHeaders: true,
+	validate: {
+		trustProxy: false,
+	},
 });
 
 app.use(cors(corsOptions));
