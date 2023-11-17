@@ -26,17 +26,12 @@ const rateLimiter = rateLimit({
 	legacyHeaders: false,
 	standardHeaders: true,
 	validate: {
-		trustProxy: true,
-		xForwardedForHeader: true,
+		default: true,
 	},
+	skip: (req) => req.path === '/v1/api',
 });
 
-app.set('trust proxy', (ip: string) => {
-	const trustedIps = config.TRUST_PROXY_IPS.split(',');
-	if (trustedIps.includes(ip)) return true;
-	return false;
-});
-
+app.set('trust proxy', 1);
 app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(helmet());
@@ -46,10 +41,15 @@ app.use(calledRouteLogger);
 await connectMongoDB();
 
 app.get('/', (req, res) => {
-	res.redirect('/v1/api');
+	res.send('Welcome To CTEVT NOTICE Handler Server');
 });
-app.get('/v1/api', (req, res) =>
-	res.send('Welcome To CTEVT NOTICE Handler Server')
+app.get('/api', (req, res) =>
+	res.json({
+		headers: req.headers,
+		ip: req.ip,
+		i: req.socket.remoteAddress,
+		headerIp: req.headers['x-forwarded-for'],
+	})
 );
 
 app.use(noticeRoutes);
