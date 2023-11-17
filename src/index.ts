@@ -31,7 +31,7 @@ const rateLimiter = rateLimit({
 	skip: (req) => req.path === '/v1/api',
 });
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 3);
 app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(helmet());
