@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import EventEmitter from 'events';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const NOTICE_WORKER_PATH = resolve(__dirname, '../notices/notice.worker.js');
+const NOTICE_WORKER_PATH = resolve(__dirname, 'notices/notice.worker.js');
 
 export const checkNoticeEvent = new EventEmitter();
 checkNoticeEvent.on('checkNotice', runNoticeCheckWorker);
@@ -22,6 +22,6 @@ function runNoticeCheckWorker() {
 	});
 
 	worker.on('error', (error) => {
-		logger.error({ error });
+		logger.error(error.message);
 	});
 }
