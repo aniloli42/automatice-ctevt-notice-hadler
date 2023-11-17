@@ -15,7 +15,6 @@ import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
 
 const app = express();
-
 const corsOptions: CorsOptions = {
 	methods: 'GET',
 	origin: '*',
@@ -24,28 +23,25 @@ const corsOptions: CorsOptions = {
 const rateLimiter = rateLimit({
 	windowMs: LIMIT_INTERVAL,
 	limit: NO_OF_REQUESTS,
-	message: `Too many requests from this IP, please try again after ${
-		LIMIT_INTERVAL / 1000
-	} seconds`,
-	legacyHeaders: true,
+	legacyHeaders: false,
 	standardHeaders: true,
+	validate: {
+		default: true,
+	},
 });
 
+app.set('trust proxy', config.TRUST_PROXY_LEVEL);
 app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
-app.set('trust proxy', config.TRUST_PROXY_LEVEL);
 
 await connectMongoDB();
 
 app.get('/', (req, res) => {
-	res.redirect('/v1/api');
+	res.send('Welcome To CTEVT NOTICE Handler Server');
 });
-app.get('/v1/api', (req, res) =>
-	res.send('Welcome To CTEVT NOTICE Handler Server')
-);
 
 app.use(noticeRoutes);
 
