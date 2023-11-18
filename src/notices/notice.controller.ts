@@ -5,7 +5,7 @@ import { getNoticeById, getSavedNotices } from './notice.service.js';
 import { MongooseError } from 'mongoose';
 import { redisClient } from '../common/config/redis-client.js';
 import { CACHED_TIME, CACHE_KEY } from '../common/constants/cache.constants.js';
-import { checkNoticeEvent } from '../services/worker.js';
+import { checkNewNoticesAndPost } from './notice.worker.js';
 
 export const getNotices = async (req: Request, res: Response) => {
 	const { limit, offset } = req.query;
@@ -46,8 +46,8 @@ export const getNotice = async (req: Request, res: Response) => {
 		}
 	}
 };
-
-export const checkNotice = (req: Request, res: Response) => {
-	checkNoticeEvent.emit('checkNotice');
+export const checkNotice = async (req: Request, res: Response) => {
+	logger.info('Check Notice Triggered');
+	await checkNewNoticesAndPost();
 	res.status(HTTP_RESPONSE.SUCCESS).json({ message: 'Check Notice Triggered' });
 };

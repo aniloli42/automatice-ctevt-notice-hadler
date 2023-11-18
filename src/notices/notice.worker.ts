@@ -5,7 +5,7 @@ import { NO_OF_NOTICES } from './notice.constants.js';
 import noticeModel from './notice.model.js';
 import { Notice } from './notice.type.js';
 
-export async function checkNewNoticesAndPost(req, res) {
+export async function checkNewNoticesAndPost() {
 	try {
 		logger.info('Checking for new notices');
 		const scrappedNotices = await scrapper();
@@ -24,8 +24,6 @@ export async function checkNewNoticesAndPost(req, res) {
 		logger.info(`New ${newNotices.length} notices published.`);
 	} catch (error) {
 		logger.error(error);
-	} finally {
-		res.status(200).send('Notice Checking Task Completed');
 	}
 }
 
