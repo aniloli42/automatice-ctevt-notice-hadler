@@ -47,7 +47,12 @@ export const getNotice = async (req: Request, res: Response) => {
 	}
 };
 export const checkNotice = async (req: Request, res: Response) => {
-	logger.info('Check Notice Triggered');
-	await checkNewNoticesAndPost();
-	res.status(HTTP_RESPONSE.SUCCESS).json({ message: 'Check Notice Triggered' });
+	try {
+		logger.info('Check Notice Triggered');
+		res
+			.status(HTTP_RESPONSE.SUCCESS)
+			.json({ message: 'Check Notice Triggered' });
+	} finally {
+		await checkNewNoticesAndPost();
+	}
 };
