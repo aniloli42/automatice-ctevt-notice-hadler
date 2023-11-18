@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { config } from './env.js';
 import logger from '../../services/logger.js';
 
-const connectMongoDB = async () => {
+const connectMongoDB = () => {
 	mongoose.connect(config.MONGODB_CONNECTION_URL);
 
 	const connection = mongoose.connection;
@@ -15,8 +15,8 @@ const connectMongoDB = async () => {
 		logger.error(error.message);
 	});
 
-	process.once('SIGTERM', async () => {
-		await connection.close();
+	process.once('SIGTERM', () => {
+		connection.close();
 		logger.info('Database Connection Closed');
 		process.exit(1);
 	});

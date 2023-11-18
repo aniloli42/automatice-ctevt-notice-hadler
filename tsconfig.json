@@ -8,9 +8,10 @@
 		"skipLibCheck": true,
 		"noUncheckedIndexedAccess": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "Bundler",
-		"module": "ESNext",
-		"noEmit": true,
+		"moduleResolution": "NodeNext",
+		"module": "NodeNext",
+		// "noEmit": true,
+		"outDir": "dist",
 		"noImplicitAny": false
 	},
 	"include": ["src"],

@@ -37,7 +37,7 @@ app.use(helmet());
 app.use(compression());
 app.use(calledRouteLogger);
 
-await connectMongoDB();
+connectMongoDB();
 
 app.get('/', (req, res) => {
 	res.send('Welcome To CTEVT NOTICE Handler Server');

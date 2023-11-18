@@ -5,9 +5,7 @@ import { NO_OF_NOTICES } from './notice.constants.js';
 import noticeModel from './notice.model.js';
 import { Notice } from './notice.type.js';
 
-await checkNewNoticesAndPost();
-
-export async function checkNewNoticesAndPost() {
+export async function checkNewNoticesAndPost(req, res) {
 	try {
 		logger.info('Checking for new notices');
 		const scrappedNotices = await scrapper();
@@ -26,6 +24,8 @@ export async function checkNewNoticesAndPost() {
 		logger.info(`New ${newNotices.length} notices published.`);
 	} catch (error) {
 		logger.error(error);
+	} finally {
+		res.status(200).send('Notice Checking Task Completed');
 	}
 }
 
@@ -39,7 +39,7 @@ const postNewNotices = async (newNotices: Notice[]) => {
 	}
 };
 
-const filterNewNotices = async (scrappedNotices: Notice[]) => {
+async function filterNewNotices(scrappedNotices: Notice[]) {
 	const noOfNotices = 20;
 	const oldNotices = await getStoredNotices(noOfNotices);
 	if (oldNotices == undefined || oldNotices?.length === 0)
@@ -53,26 +53,26 @@ const filterNewNotices = async (scrappedNotices: Notice[]) => {
 	}
 
 	return newNotices;
-};
+}
 
-const filterNewNotice = (newNotice: Notice, oldNotices: Notice[]) => {
+function filterNewNotice(newNotice: Notice, oldNotices: Notice[]) {
 	return !oldNotices.some(
 		(notice) =>
 			notice.noticeTitle === newNotice.noticeTitle &&
 			notice.publishedBy === newNotice.publishedBy &&
 			notice.publishedAt === newNotice.publishedAt
 	);
-};
+}
 
-const saveNotice = async (notice: Notice, noticePostId: string) => {
+async function saveNotice(notice: Notice, noticePostId: string) {
 	const newNotice = new noticeModel({
 		...notice,
 		facebookPostId: noticePostId,
 	});
 	await newNotice.save();
-};
+}
 
-const postNotice = (notice: Notice) => {
+function postNotice(notice: Notice) {
 	return createPost({
 		message: `
 		New Notice: ${notice.noticeTitle}
@@ -98,13 +98,13 @@ const postNotice = (notice: Notice) => {
 		#techaboutneed #ctevtnotices #ctevt
 		`,
 	});
-};
+}
 
-export const getStoredNotices = async (
+export async function getStoredNotices(
 	noOfNotices: number = NO_OF_NOTICES
-): Promise<Notice[] | undefined> => {
+): Promise<Notice[] | undefined> {
 	return (await noticeModel
 		.find()
 		.sort({ _id: -1 })
 		.limit(noOfNotices)) as Notice[];
-};
+}
