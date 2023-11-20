@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { HTTP_RESPONSE } from '../common/constants/http.constants.js';
 import logger from '../services/logger.js';
 import { getNoticeById, getSavedNotices } from './notice.service.js';

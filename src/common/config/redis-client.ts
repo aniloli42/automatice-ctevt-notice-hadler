@@ -1,8 +1,8 @@
 import {
-	RedisClientOptions,
-	RedisFunctions,
-	RedisModules,
-	RedisScripts,
+    type RedisClientOptions,
+	type RedisFunctions,
+	type RedisModules,
+	type RedisScripts,
 	createClient,
 } from 'redis';
 import logger from '../../services/logger.js';

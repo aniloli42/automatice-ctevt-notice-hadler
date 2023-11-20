@@ -1,12 +1,16 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { config } from '../common/config/env.js';
-import { Notice, File } from '../notices/notice.type.js';
+import type { Notice, File } from '../notices/notice.type.js';
 import logger from './logger.js';
 
 const scrapper = async () => {
 	const browser: Browser = await puppeteer.launch({
 		headless: 'new',
-		args: ['--no-sandbox', '--disable-setuid-sandbox'],
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+		//	`--proxy-server=${config.PROXY_URL}`,
+		],
 		defaultViewport: null,
 	});
 	try {

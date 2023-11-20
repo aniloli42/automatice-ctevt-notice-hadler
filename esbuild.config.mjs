@@ -2,11 +2,7 @@ import esbuild from 'esbuild';
 
 esbuild
 	.build({
-		entryPoints: [
-			'src/index.ts',
-			'src/services/worker.ts',
-			'src/notices/notice.worker.ts',
-		],
+		entryPoints: ['src/index.ts'],
 		outdir: 'dist',
 		bundle: true,
 		minify: true,
@@ -14,5 +10,6 @@ esbuild
 		resolveExtensions: ['.ts'],
 		packages: 'external',
 		format: 'esm',
+		watch: true,
 	})
 	.catch(() => process.exit(1));

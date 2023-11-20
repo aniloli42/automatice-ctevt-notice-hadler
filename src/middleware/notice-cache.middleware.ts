@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { type Request } from 'express';
 import { redisClient } from '../common/config/redis-client.js';
 import { CACHE_KEY } from '../common/constants/cache.constants.js';
 import logger from '../services/logger.js';

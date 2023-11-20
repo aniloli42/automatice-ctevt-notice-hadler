@@ -7,8 +7,9 @@
 	"scripts": {
 		"start": "node dist/index.js",
 		"lint": "tsc",
-		"build": "tsc",
-		"dev": "run-p dev:*",
+		"build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm --minify --packages=external",
+		"dev": "run-p dev:* ",
+		"dev:esbuild": "pnpm build --watch",
 		"dev:node": "node --watch dist/index.js",
 		"dev:tsc": "tsc --watch --preserveWatchOutput"
 	},

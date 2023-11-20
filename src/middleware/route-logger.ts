@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { type Request } from 'express';
 import logger from '../services/logger.js';
 
 export const calledRouteLogger = (req: Request, res, next) => {

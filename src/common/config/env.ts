@@ -23,6 +23,7 @@ const config = {
 	TRUST_PROXY_LEVEL: parseNumberOrDefault(process.env.TRUST_PROXY_LEVEL, 1),
 	LIMIT_INTERVAL: parseNumberOrDefault(process.env.LIMIT_INTERVAL, 60000),
 	NO_OF_REQUESTS: parseNumberOrDefault(process.env.NO_OF_REQUESTS, 20),
+	PROXY_URL: process.env.PROXY_URL!,
 } as const;
 
 const isEnvWithoutValues = Object.values(config).some(

@@ -3,7 +3,7 @@ import logger from '../services/logger.js';
 import scrapper from '../services/scrapper.js';
 import { NO_OF_NOTICES } from './notice.constants.js';
 import noticeModel from './notice.model.js';
-import { Notice } from './notice.type.js';
+import {type Notice } from './notice.type.js';
 
 export async function checkNewNoticesAndPost() {
 	try {

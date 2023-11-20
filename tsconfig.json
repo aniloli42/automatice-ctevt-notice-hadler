@@ -1,18 +1,22 @@
 {
 	"compilerOptions": {
-		"lib": ["es2023", "DOM"],
-		"target": "es2022",
-
-		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
+		"target": "es2022",
+		"verbatimModuleSyntax": true,
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"moduleDetection": "force",
+
+		"strict": true,
 		"noUncheckedIndexedAccess": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "NodeNext",
-		"module": "NodeNext",
-		// "noEmit": true,
-		"outDir": "dist",
-		"noImplicitAny": false
+
+		"moduleResolution": "Bundler",
+		"module": "ESNext",
+		"noEmit": true,
+
+		"noImplicitAny": false,
+		"lib": ["es2023", "DOM"]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
