@@ -9,8 +9,8 @@ const scrapper = async () => {
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
-	process.once('SIGTERM', async () => await closeBrowser(browser));
 	try {
+		process.once('SIGTERM', async () => await closeBrowser(browser));
 		const page = await browser.newPage();
 		await page.goto(config.WEBSITE_URL, {
 			waitUntil: 'networkidle2',
