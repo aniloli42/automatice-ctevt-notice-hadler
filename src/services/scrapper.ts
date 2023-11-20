@@ -4,20 +4,27 @@ import { Notice, File } from '../notices/notice.type.js';
 import logger from './logger.js';
 
 const scrapper = async () => {
-	const browser = await puppeteer.launch({
-		headless: 'new',
-		args: [
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			`--proxy-server=${config.PROXY_URL}`,
-		],
-		defaultViewport: null,
-	});
+	let browser: Browser;
 
 	try {
+		browser = await puppeteer.launch({
+			headless: false,
+			args: [
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
+				// `--proxy-server=${config.PROXY_URL}`,
+			],
+			defaultViewport: null,
+		});
+
 		process.once('SIGTERM', async () => await closeBrowser(browser));
 
 		const page = await browser.newPage();
+		page.setGeolocation({
+			latitude: 28.3949,
+			longitude: 84.124,
+			accuracy: 100,
+		});
 		await page.goto(config.WEBSITE_URL, {
 			waitUntil: 'networkidle2',
 			timeout: 0,
