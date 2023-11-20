@@ -6,22 +6,12 @@ import logger from './logger.js';
 const scrapper = async () => {
 	const browser: Browser = await puppeteer.launch({
 		headless: 'new',
-		args: [
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			// `--proxy-server=${config.PROXY_URL}`,
-		],
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
+	process.once('SIGTERM', async () => await closeBrowser(browser));
 	try {
-		process.once('SIGTERM', async () => await closeBrowser(browser));
-
 		const page = await browser.newPage();
-		page.setGeolocation({
-			latitude: 28.3949,
-			longitude: 84.124,
-			accuracy: 100,
-		});
 		await page.goto(config.WEBSITE_URL, {
 			waitUntil: 'networkidle2',
 			timeout: 0,
