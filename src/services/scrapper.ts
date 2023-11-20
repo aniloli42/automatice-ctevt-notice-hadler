@@ -4,19 +4,16 @@ import { Notice, File } from '../notices/notice.type.js';
 import logger from './logger.js';
 
 const scrapper = async () => {
-	let browser: Browser;
-
+	const browser: Browser = await puppeteer.launch({
+		headless: 'new',
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			// `--proxy-server=${config.PROXY_URL}`,
+		],
+		defaultViewport: null,
+	});
 	try {
-		browser = await puppeteer.launch({
-			headless: 'new',
-			args: [
-				'--no-sandbox',
-				'--disable-setuid-sandbox',
-				// `--proxy-server=${config.PROXY_URL}`,
-			],
-			defaultViewport: null,
-		});
-
 		process.once('SIGTERM', async () => await closeBrowser(browser));
 
 		const page = await browser.newPage();
