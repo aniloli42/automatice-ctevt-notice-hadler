@@ -6,11 +6,7 @@ import logger from './logger.js';
 const scrapper = async () => {
 	const browser: Browser = await puppeteer.launch({
 		headless: 'new',
-		args: [
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-		//	`--proxy-server=${config.PROXY_URL}`,
-		],
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
 	try {
