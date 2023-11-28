@@ -13,6 +13,7 @@ import {
 import { calledRouteLogger } from './middleware/route-logger.js';
 import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
+import { runNoticeCheck } from './notices/notice.cron-job.js';
 
 const app = express();
 const corsOptions: CorsOptions = {
@@ -38,6 +39,7 @@ app.use(compression());
 app.use(calledRouteLogger);
 
 connectMongoDB();
+runNoticeCheck.start();
 
 app.get('/', (req, res) => {
 	res.send('Welcome To CTEVT NOTICE Handler Server');

@@ -3,27 +3,30 @@ import { config } from '../common/config/env.js';
 import type { Notice, File } from '../notices/notice.type.js';
 import logger from './logger.js';
 
+let browser: Browser;
+
 const scrapper = async () => {
-	const browser: Browser = await puppeteer.launch({
+	browser = await puppeteer.launch({
 		headless: 'new',
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null,
 	});
+	if (process.env.NODE_ENV !== 'production')
+		process.once('SIGTERM', closeBrowser);
+
 	try {
-		process.once('SIGTERM', async () => await closeBrowser(browser));
 		const page = await browser.newPage();
 		await page.goto(config.WEBSITE_URL, {
 			waitUntil: 'networkidle2',
 			timeout: 0,
 		});
 
-		const scrapedData = await page.evaluate(scrapNotices);
-
-		return scrapedData;
+		return page.evaluate(scrapNotices);
 	} catch (error: unknown) {
 		logger.error(error);
 	} finally {
-		await browser.close();
+		if (browser) await browser.close();
+		process.removeListener('SIGTERM', closeBrowser);
 	}
 };
 

@@ -1,11 +1,11 @@
 import { createLogger, format, transports } from 'winston';
 
 const loggingFormat = format.printf(
-	({ level, message }) => `[${level}] ${message}`
+	({ timestamp, level, message }) => `[${timestamp}] ${level}: ${message}`
 );
 
 const logger = createLogger({
-	format: format.combine(loggingFormat),
+	format: format.combine(format.timestamp({ format: 'HH:mm:ss' }),loggingFormat),
 	transports: [
 		new transports.Console(),
 		new transports.File({
