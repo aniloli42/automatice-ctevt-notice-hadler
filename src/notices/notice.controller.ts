@@ -1,17 +1,27 @@
 import type { Request, Response } from 'express';
-import { HTTP_RESPONSE } from '../common/constants/http.constants.js';
-import logger from '../services/logger.js';
-import { getNoticeById, getSavedNotices } from './notice.service.js';
 import { MongooseError } from 'mongoose';
 import { redisClient } from '../common/config/redis-client.js';
-import { CACHED_TIME, CACHE_KEY } from '../common/constants/cache.constants.js';
+import {
+	CACHED_TIME,
+	NOTICES_CACHE_KEY,
+} from '../common/constants/cache.constants.js';
+import { HTTP_RESPONSE } from '../common/constants/http.constants.js';
+import { getPaginatedCacheKey } from '../common/utils/getPaginatedCacheKey.js';
+import logger from '../services/logger.js';
+import { getNoticeById, getSavedNotices } from './notice.service.js';
 import { checkNewNoticesAndPost } from './notice.worker.js';
 
 export const getNotices = async (req: Request, res: Response) => {
-	const { limit, offset } = req.query;
+	console.log(req.query);
+	const { limit, page } = req.query;
+	const cacheKey = getPaginatedCacheKey({
+		page,
+		limit,
+		initialKey: NOTICES_CACHE_KEY,
+	});
 
-	const notices = await getSavedNotices(limit, offset);
-	await redisClient.setEx(CACHE_KEY, CACHED_TIME, JSON.stringify(notices));
+	const notices = await getSavedNotices(limit, page);
+	await redisClient.setEx(cacheKey, CACHED_TIME, JSON.stringify(notices));
 
 	res.status(HTTP_RESPONSE.SUCCESS).json(notices);
 };
@@ -46,6 +56,7 @@ export const getNotice = async (req: Request, res: Response) => {
 		}
 	}
 };
+
 export const checkNotice = async (req: Request, res: Response) => {
 	try {
 		logger.info('Check Notice Triggered');
