@@ -21,7 +21,7 @@ const scrapper = async () => {
 			timeout: 0,
 		});
 
-		return page.evaluate(scrapNotices);
+		return await page.evaluate(scrapNotices);
 	} catch (error: unknown) {
 		logger.error(error);
 	} finally {

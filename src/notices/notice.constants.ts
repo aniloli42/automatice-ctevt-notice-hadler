@@ -6,3 +6,5 @@ export const FIELD_TO_BE_NEGLECTED = [
 	'-updatedAt',
 	'-__v',
 ];
+
+export const NOTICE_FETCH_CRON_JOB_SCHEDULE = '*/10 5-21 * * *';

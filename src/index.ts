@@ -1,7 +1,7 @@
 import compression from 'compression';
 import cors, { type CorsOptions } from 'cors';
 import 'dotenv/config';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import connectMongoDB from './common/config/db.js';
@@ -11,9 +11,9 @@ import {
 	NO_OF_REQUESTS,
 } from './common/constants/app.constants.js';
 import { calledRouteLogger } from './middleware/route-logger.js';
+import { runNoticeCheck } from './notices/notice.cron-job.js';
 import noticeRoutes from './notices/notice.route.js';
 import logger from './services/logger.js';
-import { runNoticeCheck } from './notices/notice.cron-job.js';
 
 const app = express();
 const corsOptions: CorsOptions = {
@@ -41,12 +41,20 @@ app.use(calledRouteLogger);
 connectMongoDB();
 runNoticeCheck.start();
 
-app.get('/', (req, res) => {
-	res.send('Welcome To CTEVT NOTICE Handler Server');
-});
+const routeGuides = (req: Request, res: Response) => {
+	res.json({
+		endpoints: {
+			'Get Notices': '/v1/api/notices',
+			'Get Notices with Pagination':
+				'/v1/api/notices/?page={page_no}&limit={no_of_notice}',
+			'Get Notice': '/v1/api/notices/{noticeId}',
+		},
+	});
+};
+
+app.get('/', routeGuides);
 
 app.use(noticeRoutes);
-
 app.listen(config.PORT, () =>
 	logger.info(`Server is live on port ${config.PORT}`)
 );
