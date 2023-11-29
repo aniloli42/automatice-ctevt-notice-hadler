@@ -43,6 +43,7 @@ runNoticeCheck.start();
 
 const routeGuides = (req: Request, res: Response) => {
 	res.json({
+    greeting: "Welcome to CTEVT Notice Automation Server",
 		endpoints: {
 			'Get Notices': '/v1/api/notices',
 			'Get Notices with Pagination':
