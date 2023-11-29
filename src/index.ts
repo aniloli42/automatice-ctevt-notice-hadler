@@ -39,7 +39,8 @@ app.use(compression());
 app.use(calledRouteLogger);
 
 connectMongoDB();
-runNoticeCheck.start();
+
+if(process.env.NODE_ENV !== "production") runNoticeCheck.start();
 
 const routeGuides = (req: Request, res: Response) => {
 	res.json({
