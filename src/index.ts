@@ -39,10 +39,12 @@ app.use(compression());
 app.use(calledRouteLogger);
 
 connectMongoDB();
-runNoticeCheck.start();
+
+if(process.env.NODE_ENV !== "production") runNoticeCheck.start();
 
 const routeGuides = (req: Request, res: Response) => {
 	res.json({
+    greeting: "Welcome to CTEVT Notice Automation Server",
 		endpoints: {
 			'Get Notices': '/v1/api/notices',
 			'Get Notices with Pagination':
