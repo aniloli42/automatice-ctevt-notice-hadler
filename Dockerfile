@@ -20,7 +20,6 @@ RUN pnpm i --frozen-lockfile
 RUN pnpm build
 
 FROM base AS production
-ENV NODE_ENV=production
 COPY --from=setup /server/dist ./dist
 COPY --from=setup /server/node_modules ./node_modules
 COPY --from=setup /server/package.json ./package.json
