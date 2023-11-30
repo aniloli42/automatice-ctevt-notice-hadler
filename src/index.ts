@@ -40,6 +40,7 @@ app.use(calledRouteLogger);
 
 connectMongoDB();
 
+console.log("NDDE_ENV: ",process.env.NODE_ENV)
 if(process.env.NODE_ENV !== "production") runNoticeCheck.start();
 
 const routeGuides = (req: Request, res: Response) => {
