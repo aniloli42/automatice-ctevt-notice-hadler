@@ -39,13 +39,11 @@ app.use(compression());
 app.use(calledRouteLogger);
 
 connectMongoDB();
-
-console.log("NDDE_ENV: ",process.env.NODE_ENV)
-if(process.env.NODE_ENV !== "production") runNoticeCheck.start();
+if (process.env.NODE_ENV !== 'production') runNoticeCheck.start();
 
 const routeGuides = (req: Request, res: Response) => {
 	res.json({
-    greeting: "Welcome to CTEVT Notice Automation Server",
+		greeting: 'Welcome to CTEVT Notice Automation Server',
 		endpoints: {
 			'Get Notices': '/v1/api/notices',
 			'Get Notices with Pagination':
@@ -56,8 +54,8 @@ const routeGuides = (req: Request, res: Response) => {
 };
 
 app.get('/', routeGuides);
-
 app.use(noticeRoutes);
-app.listen(config.PORT, () =>
-	logger.info(`Server is live on port ${config.PORT}`)
-);
+
+const runningServerLog = () =>
+	logger.info(`Server is live on port ${config.PORT}`);
+app.listen(config.PORT, runningServerLog);
