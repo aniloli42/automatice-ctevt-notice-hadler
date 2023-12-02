@@ -4,7 +4,6 @@ import type { Notice, File } from '../notices/notice.type.js'
 import logger from './logger.js'
 
 let browser: Browser
-
 const scrapper = async () => {
 	browser = await puppeteer.launch({
 		headless: 'new',

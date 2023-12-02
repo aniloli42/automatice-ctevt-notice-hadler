@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node dist/index.js",
-		"lint": "eslint && tsc",
+		"lint": "eslint src && tsc",
 		"format": "prettier --write .",
 		"test": "",
 		"build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm --minify --packages=external",
@@ -19,6 +19,17 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
+	"husky":{
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged":{
+		"src/**/*.{ts,js,jsx,tsx}": [
+			"pnpm format",
+			"pnpm lint"
+		]
+	},
 	"dependencies": {
 		"@commitlint/config-conventional": "^18.4.3",
 		"axios": "^1.6.2",
