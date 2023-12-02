@@ -1,9 +1,9 @@
-type HTTP_RESPONSE = Record<string, number>;
+type HTTP_RESPONSE = Record<string, number>
 
 export const HTTP_RESPONSE = {
 	SUCCESS: 200,
 	NOT_FOUND: 404,
 	SERVER_ERROR: 500,
 	UNAUTHORIZED: 401,
-	FORBIDDEN: 403,
-} satisfies HTTP_RESPONSE;
+	FORBIDDEN: 403
+} satisfies HTTP_RESPONSE
