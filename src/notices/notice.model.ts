@@ -1,35 +1,35 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose'
 
 const ctevtSchema = new Schema(
 	{
 		publishedAt: {
 			type: String,
-			required: true,
+			required: true
 		},
 		noticeTitle: {
 			type: String,
-			required: true,
+			required: true
 		},
 		noticeLink: {
 			type: String,
 			required: true,
-			unique: true,
+			unique: true
 		},
 		files: {
 			type: [Object],
-			required: true,
+			required: true
 		},
 		facebookPostId: {
-			type: String,
+			type: String
 		},
 		publishedBy: {
 			type: String,
-			required: true,
-		},
+			required: true
+		}
 	},
 	{ timestamps: true }
-);
+)
 
-const notice = model('notice', ctevtSchema);
+const notice = model('notice', ctevtSchema)
 
-export default notice;
+export default notice

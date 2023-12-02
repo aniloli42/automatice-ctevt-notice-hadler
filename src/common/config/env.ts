@@ -1,5 +1,5 @@
 const parseNumberOrDefault = <T>(value: string | undefined, defaultValue: T) =>
-	parseInt(value ?? '') || defaultValue;
+	parseInt(value ?? '') || defaultValue
 
 const config = {
 	// eslint-disable-next-line no-magic-numbers
@@ -22,24 +22,22 @@ const config = {
 
 	TRUST_PROXY_LEVEL: parseNumberOrDefault(process.env.TRUST_PROXY_LEVEL, 1),
 	LIMIT_INTERVAL: parseNumberOrDefault(process.env.LIMIT_INTERVAL, 60000),
-	NO_OF_REQUESTS: parseNumberOrDefault(process.env.NO_OF_REQUESTS, 20),
-} as const;
+	NO_OF_REQUESTS: parseNumberOrDefault(process.env.NO_OF_REQUESTS, 20)
+} as const
 
-const isEnvWithoutValues = Object.values(config).some(
-	(env) => env == undefined
-);
+const isEnvWithoutValues = Object.values(config).some((env) => env == undefined)
 
 if (isEnvWithoutValues) {
 	const envWithoutValues = [...Object.entries(config)].reduce(
 		(noValueEnvs: string[], [key, value]) => {
-			if (value == undefined) noValueEnvs.push(key);
-			return noValueEnvs;
+			if (value == undefined) noValueEnvs.push(key)
+			return noValueEnvs
 		},
 		[]
-	);
+	)
 
-	const errorMessage = `Env without values: ${envWithoutValues.join(', ')}`;
-	throw new Error(errorMessage);
+	const errorMessage = `Env without values: ${envWithoutValues.join(', ')}`
+	throw new Error(errorMessage)
 }
 
-export { config };
+export { config }
