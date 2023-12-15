@@ -13,7 +13,10 @@ const ctevtSchema = new Schema(
 		noticeLink: {
 			type: String,
 			required: true,
-			unique: true
+			index: {
+				unique: false,
+				sparse: true
+			}
 		},
 		files: {
 			type: [Object],
