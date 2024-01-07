@@ -14,8 +14,8 @@ export const noticeCacheMiddleware = async (
 		const { page, limit } = req.query
 
 		const cacheKey = getPaginatedCacheKey({
-			limit,
-			page,
+			page: page ? +page : undefined,
+			limit: limit ? +limit : undefined,
 			initialKey: NOTICES_CACHE_KEY
 		})
 

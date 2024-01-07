@@ -1,13 +1,13 @@
 import type { Request, Response } from 'express'
 import { MongooseError } from 'mongoose'
-import { redisClient } from '../common/config/redis-client.js'
+import { redisClient } from '@common/config/redis-client.js'
 import {
 	CACHED_TIME,
 	NOTICES_CACHE_KEY
-} from '../common/constants/cache.constants.js'
-import { HTTP_RESPONSE } from '../common/constants/http.constants.js'
-import { getPaginatedCacheKey } from '../common/utils/getPaginatedCacheKey.js'
-import logger from '../services/logger.js'
+} from '@common/constants/cache.constants.js'
+import { HTTP_RESPONSE } from '@common/constants/http.constants.js'
+import { getPaginatedCacheKey } from '@common/utils/getPaginatedCacheKey.js'
+import logger from '@services/logger.js'
 import { getNoticeById, getSavedNotices } from './notice.service.js'
 import { checkNewNoticesAndPost } from './notice.worker.js'
 
@@ -15,8 +15,8 @@ export const getNotices = async (req: Request, res: Response) => {
 	console.log(req.query)
 	const { limit, page } = req.query
 	const cacheKey = getPaginatedCacheKey({
-		page,
-		limit,
+		page: page ? +page : undefined,
+		limit: limit ? +limit : undefined,
 		initialKey: NOTICES_CACHE_KEY
 	})
 

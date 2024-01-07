@@ -1,4 +1,4 @@
-type PaginatedKeys = { page: unknown; limit: unknown; initialKey: string }
+type PaginatedKeys = { page?: number; limit?: number; initialKey: string }
 
 export const getPaginatedCacheKey = ({
 	page,

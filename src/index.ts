@@ -4,16 +4,16 @@ import 'dotenv/config'
 import express, { type Request, type Response } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import helmet from 'helmet'
-import connectMongoDB from './common/config/db.js'
-import { config } from './common/config/env.js'
+import connectMongoDB from '@common/config/db.js'
+import { config } from '@common/config/env.js'
 import {
 	LIMIT_INTERVAL,
 	NO_OF_REQUESTS
-} from './common/constants/app.constants.js'
-import { calledRouteLogger } from './middleware/route-logger.js'
-import { runNoticeCheck } from './notices/notice.cron-job.js'
-import noticeRoutes from './notices/notice.route.js'
-import logger from './services/logger.js'
+} from '@common/constants/app.constants.js'
+import { calledRouteLogger } from '@middleware/route-logger.js'
+import { runNoticeCheck } from '@notices/notice.cron-job.js'
+import noticeRoutes from '@notices/notice.route.js'
+import logger from '@services/logger.js'
 
 const app = express()
 const corsOptions: CorsOptions = {

@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"target": "es2022",
+		"target": "ESNext",
 		"verbatimModuleSyntax": true,
 		"allowJs": true,
 		"resolveJsonModule": true,
@@ -16,7 +16,11 @@
 		"noEmit": true,
 
 		"noImplicitAny": false,
-		"lib": ["es2023", "DOM"]
+		"lib": ["es2023", "DOM"],
+		"baseUrl": ".",
+		"paths": {
+			"@*": ["./src/*"]
+		}
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
