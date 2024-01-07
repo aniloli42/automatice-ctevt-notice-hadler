@@ -1,20 +1,8 @@
-import {
-	type RedisClientOptions,
-	type RedisFunctions,
-	type RedisModules,
-	type RedisScripts,
-	createClient
-} from 'redis'
-import logger from '../../services/logger.js'
+import { type RedisClientOptions, createClient } from 'redis'
+import logger from '@services/logger.js'
 import { config } from './env.js'
 
-type TRedisClientOptions = RedisClientOptions<
-	RedisModules,
-	RedisFunctions,
-	RedisScripts
->
-
-const redisClientOptions: TRedisClientOptions = {
+const redisClientOptions: RedisClientOptions = {
 	password: config.REDIS_CLIENT_PASSWORD,
 	socket: {
 		host: config.REDIS_CONNECTION_URL,
@@ -22,7 +10,7 @@ const redisClientOptions: TRedisClientOptions = {
 	}
 }
 
-const redisClient = createClient(redisClientOptions)
+export const redisClient = createClient(redisClientOptions)
 await redisClient.connect()
 
 redisClient.on('error', (error) => {
@@ -32,5 +20,3 @@ redisClient.on('error', (error) => {
 process.once('SIGTERM', async () => {
 	await redisClient.disconnect()
 })
-
-export { redisClient }

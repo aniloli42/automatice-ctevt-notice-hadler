@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import Token from './token.model.js'
-import { config } from './../../common/config/env.js'
-import logger from '../logger.js'
+import { config } from '@common/config/env.js'
+import logger from '@services/logger.js'
 const MILLISECOND_IN_SECOND = 1000
 
 const getPageAccessToken = async () => {

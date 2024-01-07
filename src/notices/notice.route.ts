@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { noticeCacheMiddleware } from '../middleware/notice-cache.middleware.js'
+import { noticeCacheMiddleware } from '@middleware/notice-cache.middleware.js'
 import { getNotice, getNotices } from './notice.controller.js'
 
 const router = Router()

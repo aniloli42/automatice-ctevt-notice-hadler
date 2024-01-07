@@ -1,6 +1,6 @@
 import puppeteer, { Browser } from 'puppeteer'
-import { config } from '../common/config/env.js'
-import type { Notice, File } from '../notices/notice.type.js'
+import { config } from '@common/config/env.js'
+import type { Notice, File } from '@notices/notice.type.js'
 import logger from './logger.js'
 
 let browser: Browser
