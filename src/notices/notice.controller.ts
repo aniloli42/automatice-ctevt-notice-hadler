@@ -1,5 +1,3 @@
-import type { Request, Response } from 'express'
-import { MongooseError } from 'mongoose'
 import { redisClient } from '@common/config/redis-client.js'
 import {
 	CACHED_TIME,
@@ -8,8 +6,9 @@ import {
 import { HTTP_RESPONSE } from '@common/constants/http.constants.js'
 import { getPaginatedCacheKey } from '@common/utils/getPaginatedCacheKey.js'
 import logger from '@services/logger.js'
+import type { Request, Response } from 'express'
+import { MongooseError } from 'mongoose'
 import { getNoticeById, getSavedNotices } from './notice.service.js'
-import { checkNewNoticesAndPost } from './notice.worker.js'
 
 export const getNotices = async (req: Request, res: Response) => {
 	console.log(req.query)
@@ -54,16 +53,5 @@ export const getNotice = async (req: Request, res: Response) => {
 			res.status(HTTP_RESPONSE.NOT_FOUND).json({ error: error.message })
 			return
 		}
-	}
-}
-
-export const checkNotice = async (req: Request, res: Response) => {
-	try {
-		logger.info('Check Notice Triggered')
-		res.status(HTTP_RESPONSE.SUCCESS).json({
-			message: 'Check Notice Triggered'
-		})
-	} finally {
-		await checkNewNoticesAndPost()
 	}
 }
