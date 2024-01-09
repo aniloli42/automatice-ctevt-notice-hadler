@@ -11,12 +11,16 @@ const redisClientOptions: RedisClientOptions = {
 }
 
 export const redisClient = createClient(redisClientOptions)
-await redisClient.connect()
+
+try {
+	await redisClient.connect()
+	logger.info('Connected with Redis')
+} catch (error) {
+	if (error instanceof Error) {
+		logger.error(error.message)
+	}
+}
 
 redisClient.on('error', (error) => {
 	logger.error(error.message)
-})
-
-process.once('SIGTERM', async () => {
-	await redisClient.disconnect()
 })

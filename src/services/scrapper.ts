@@ -10,8 +10,6 @@ const scrapper = async () => {
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		defaultViewport: null
 	})
-	if (process.env.NODE_ENV !== 'production')
-		process.once('SIGTERM', closeBrowser)
 
 	try {
 		const page = await browser.newPage()
@@ -25,13 +23,7 @@ const scrapper = async () => {
 		logger.error(error)
 	} finally {
 		if (browser) await browser.close()
-		process.removeListener('SIGTERM', closeBrowser)
 	}
-}
-
-async function closeBrowser(browser: Browser) {
-	if (browser) await browser.close()
-	process.exit(1)
 }
 
 function scrapNotices(): Notice[] {
