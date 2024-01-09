@@ -27,7 +27,7 @@ export async function checkNewNoticesAndPost() {
 	}
 }
 
-const postNewNotices = async (newNotices: Notice[]) => {
+async function postNewNotices(newNotices: Notice[]) {
 	for await (const notice of newNotices) {
 		const noticePostId = await postNotice(notice)
 		logger.info(`Notice Posted: ${notice.noticeTitle}`)
