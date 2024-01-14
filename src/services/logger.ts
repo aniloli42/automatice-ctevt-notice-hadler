@@ -6,7 +6,7 @@ const loggingFormat = format.printf(
 
 const logger = createLogger({
 	format: format.combine(
-		format.timestamp({ format: 'HH:mm:ss' }),
+		format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
 		loggingFormat
 	),
 	transports: [
