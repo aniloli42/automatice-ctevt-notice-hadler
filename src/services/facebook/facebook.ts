@@ -10,16 +10,13 @@ const getPageAccessToken = async () => {
 			token_type: 'page_access_token'
 		})
 
-		const currentTime = Date.now() / MILLISECOND_IN_SECOND
-
 		if (!pageAccessToken) return generatePageAccessToken()
-
-		if (pageAccessToken.expires_in < currentTime)
-			return generatePageAccessToken()
 
 		return pageAccessToken.access_token
 	} catch (error) {
 		logger.error(error)
+		if (error instanceof Error) return Error(error.message)
+		return Error('Unknown Error at getPageAccessToken')
 	}
 }
 
@@ -46,8 +43,10 @@ const requestPageInformation = async () => {
 
 		return response.data
 	} catch (error: unknown) {
-		if (error instanceof AxiosError) return error.response?.data
-		return error
+		logger.error(error)
+		if (error instanceof AxiosError) return Error(error.response?.data)
+		if (error instanceof Error) return Error(error.message)
+		return Error('Unknown Error at requestPageInformation')
 	}
 }
 
@@ -60,7 +59,7 @@ const createPost = async ({ message }: CreatePost) => {
 		const pageAccessToken = await getPageAccessToken()
 
 		const postNoticeURL = new URL(
-			`/v18.0/${config.FACEBOOK_PAGE_ID}/feed`,
+			`/v19.0/${config.FACEBOOK_PAGE_ID}/feed`,
 			config.FACEBOOK_API_BASE_URL
 		)
 
@@ -77,15 +76,21 @@ const createPost = async ({ message }: CreatePost) => {
 
 		const noticePostResponseData = await noticePostResponse.data
 
-		return noticePostResponseData.id
+		return noticePostResponseData.id as string
 	} catch (error) {
 		logger.error(error)
+		if (error instanceof AxiosError) return Error(error.response?.data)
+		if (error instanceof Error) return Error(error.message)
+		return Error('Unknown Error')
 	}
 }
 
 const generatePageAccessToken = async () => {
 	try {
 		const userAccessToken = await getUserAccessToken()
+		if (userAccessToken instanceof Error)
+			return Error(userAccessToken.message)
+
 		const newPageAccessToken = await getNewPageAccessToken(userAccessToken)
 
 		const pageAccessTokenExpiresAt = await getPageAccessTokenExpiresAt(
@@ -98,9 +103,11 @@ const generatePageAccessToken = async () => {
 			pageAccessTokenExpiresAt
 		)
 
-		return newPageAccessToken
+		return newPageAccessToken as string
 	} catch (error) {
 		logger.error(error)
+		if (error instanceof Error) return Error(error.message)
+		return Error('Unknown Error at generatePageAccessToken')
 	}
 }
 
@@ -109,18 +116,18 @@ const getUserAccessToken = async () => {
 		token_type: 'user_access_token'
 	})
 
-	if (!userAccessToken) throw new Error('User Access Token Not Found!!!')
+	if (!userAccessToken) return Error('User Access Token Not Found!!!')
 
 	const currentTime = Date.now() / MILLISECOND_IN_SECOND
 	if (userAccessToken.expires_in < currentTime)
-		throw new Error('User Access Token Expired')
+		return Error('User Access Token Expired')
 
 	return userAccessToken.access_token
 }
 
 const getNewPageAccessToken = async (userAccessToken: string) => {
 	const pageAccessTokenGetURL = new URL(
-		`/${config.FACEBOOK_USER_ID}/accounts`,
+		`/v19.0/${config.FACEBOOK_USER_ID}/accounts`,
 		config.FACEBOOK_API_BASE_URL
 	)
 	const pageAccessTokenGetSearchParams = new URLSearchParams()

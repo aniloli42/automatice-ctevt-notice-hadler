@@ -20,7 +20,11 @@ export async function checkNewNoticesAndPost() {
 
 		logger.info(`New Notices: ${newNotices.length}`)
 
-		await postNewNotices(newNotices.reverse())
+		const errorOccurred = await postNewNotices(newNotices.reverse())
+
+		if (errorOccurred instanceof Error)
+			return logger.error(errorOccurred.message)
+
 		logger.info(`New ${newNotices.length} notices published.`)
 	} catch (error) {
 		logger.error(error)
@@ -30,6 +34,9 @@ export async function checkNewNoticesAndPost() {
 async function postNewNotices(newNotices: Notice[]) {
 	for await (const notice of newNotices) {
 		const noticePostId = await postNotice(notice)
+		if (noticePostId instanceof Error) {
+			return Error('Unable to post the notice')
+		}
 		logger.info(`Notice Posted: ${notice.noticeTitle}`)
 
 		await saveNotice(notice, noticePostId)
@@ -62,12 +69,12 @@ function filterNewNotice(newNotice: Notice, oldNotices: Notice[]) {
 	)
 }
 
-async function saveNotice(notice: Notice, noticePostId: string) {
+function saveNotice(notice: Notice, noticePostId: string) {
 	const newNotice = new noticeModel({
 		...notice,
 		facebookPostId: noticePostId
 	})
-	await newNotice.save()
+	return newNotice.save()
 }
 
 function postNotice(notice: Notice) {
