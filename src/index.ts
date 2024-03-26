@@ -45,7 +45,7 @@ await connectMongoDB()
 
 if (process.env.NODE_ENV !== 'production') runNoticeCheck.start()
 
-const routeGuides = (req: Request, res: Response) => {
+const routeGuides = (_: Request, res: Response) => {
 	res.json(GREET)
 }
 
