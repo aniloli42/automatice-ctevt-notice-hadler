@@ -7,4 +7,4 @@ export const FIELD_TO_BE_NEGLECTED = [
 	'-__v'
 ]
 
-export const NOTICE_FETCH_CRON_JOB_SCHEDULE = '*/5 5-22 * * *'
+export const NOTICE_FETCH_CRON_JOB_SCHEDULE = '*/5 * * * *'
