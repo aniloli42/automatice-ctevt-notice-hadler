@@ -16,7 +16,9 @@ const EnvParser = z.object({
 
 	TRUST_PROXY_LEVEL: z.coerce.number().int().positive().default(1),
 	LIMIT_INTERVAL: z.coerce.number().int().positive().default(60000),
-	NO_OF_REQUESTS: z.coerce.number().int().positive().default(20)
+	NO_OF_REQUESTS: z.coerce.number().int().positive().default(20),
+
+	URL_SHORTNER_ACCESS_TOKEN: z.string()
 })
 
 type Config = z.infer<typeof EnvParser>

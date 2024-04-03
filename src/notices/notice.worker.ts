@@ -4,6 +4,7 @@ import scrapper from '@services/scrapper.js'
 import { NO_OF_NOTICES } from './notice.constants.js'
 import noticeModel from './notice.model.js'
 import { type Notice } from './notice.type.js'
+import { linkShortner } from '@services/link-shortner.js'
 
 export async function checkNewNoticesAndPost() {
 	try {
@@ -77,26 +78,29 @@ function saveNotice(notice: Notice, noticePostId: string) {
 	return newNotice.save()
 }
 
-function postNotice(notice: Notice) {
+async function postNotice(notice: Notice) {
+	const shortNoticeLink = await linkShortner(notice.noticeLink)
+
+	let noticeFiles = ''
+	for await (const file of notice.files) {
+		const shortLink = await linkShortner(file.fileLink)
+		noticeFiles += `
+			file: ${file.fileName}
+			link: ${shortLink}\n\n
+			`
+	}
+
 	return createPost({
 		message: `
 		${notice.noticeTitle}
 
 		Published by: ${notice.publishedBy}
 		Published at: ${notice.publishedAt}
-		Notice Link: ${notice.noticeLink}
+		Notice Link: ${shortNoticeLink}
 
 		Attached Files:
 		-----------------------
-	${notice.files.reduce((acc, file) => {
-		acc += `
-			file: ${file.fileName}
-			link: ${file.fileLink}
-			
-			`
-
-		return acc
-	}, '')}
+    ${noticeFiles}
 
 		#techaboutneed #ctevtnotices #ctevt
 		`
