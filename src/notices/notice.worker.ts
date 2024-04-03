@@ -80,21 +80,19 @@ function saveNotice(notice: Notice, noticePostId: string) {
 function postNotice(notice: Notice) {
 	return createPost({
 		message: `
-		New Notice: ${notice.noticeTitle}
+		${notice.noticeTitle}
 
 		Published by: ${notice.publishedBy}
 		Published at: ${notice.publishedAt}
+		Notice Link: ${notice.noticeLink}
 
-		Check out the details of this notice: ${notice.noticeLink}
-
-		Attached File:
+		Attached Files:
 		-----------------------
 	${notice.files.reduce((acc, file) => {
 		acc += `
-			File Name: ${file.fileName}
-			File Link: ${file.fileLink}
+			file: ${file.fileName}
+			link: ${file.fileLink}
 			
-			---------------------
 			`
 
 		return acc
